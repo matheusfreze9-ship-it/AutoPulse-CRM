@@ -1,5 +1,5 @@
 /**
- * MazyOS (CRM de Estética Automotiva) — CORE CRM ENGINE
+ * FrezeLabs (CRM de Estética Automotiva) — CORE CRM ENGINE
  * Single Page Application Logic, Storage & Recurrence Engine (Manutenção Preventiva)
  */
 

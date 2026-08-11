@@ -1,4 +1,4 @@
-# MazyOS — CRM de Estética Automotiva
+# FrezeLabs — CRM de Estética Automotiva
 
 Sistema de gestão (CRM) completo para estéticas automotivas, lavagens detalhadas, polimentos, vitrificação e proteção de pintura. Desenvolvido para rodar **100% no navegador** (computador ou celular), sem servidor e sem banco de dados externo — os dados ficam salvos localmente no próprio dispositivo.
 
@@ -60,4 +60,4 @@ scripts/          → scripts auxiliares
 
 ---
 
-Sistema MazyOS (CRM de Estética Automotiva) — template de demonstração e revenda. Desenvolvido por **Freze Labs**.
+Sistema FrezeLabs (CRM de Estética Automotiva) — template de demonstração e revenda. Desenvolvido por **Freze Labs**.
