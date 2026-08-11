@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MazyOS — CRM de Estética Automotiva</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand-header">
+        <div class="brand-text">MAZY<b>OS</b></div>
+        <div class="brand-info">
+          <h2>MAZYOS</h2>
+          <span>CRM DE ESTÉTICA</span>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <a href="#dashboard" class="nav-item active" data-tab="dashboard">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#orcamentos" class="nav-item" data-tab="orcamentos">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+          <span>Orçamentos</span>
+        </a>
+        <a href="#servicos" class="nav-item" data-tab="servicos">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Serviços</span>
+        </a>
+        <a href="#crm" class="nav-item" data-tab="crm">
+          <i class="fa-solid fa-address-book"></i>
+          <span>Clientes & Veículos</span>
+        </a>
+        <a href="#recorrencia" class="nav-item" data-tab="recorrencia">
+          <i class="fa-solid fa-bell"></i>
+          <span>Lembretes</span>
+          <span class="badge-alert" id="recorrencia-badge">0</span>
+        </a>
+        <a href="#agenda" class="nav-item" data-tab="agenda">
+          <i class="fa-solid fa-calendar-days"></i>
+          <span>Agenda</span>
+        </a>
+        <a href="#financeiro" class="nav-item" data-tab="financeiro">
+          <i class="fa-solid fa-wallet"></i>
+          <span>Financeiro</span>
+        </a>
+        <a href="#configuracoes" class="nav-item" data-tab="configuracoes">
+          <i class="fa-solid fa-gear"></i>
+          <span>Configurações & Backup</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-pill">
+          <div class="user-avatar">DA</div>
+          <div class="user-details">
+            <span class="user-name">Operação Solo</span>
+            <span class="user-role">Administrador</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-title">
+          <h1 id="page-title">Dashboard Executivo</h1>
+          <p id="page-subtitle">Visão geral do negócio e alertas operacionais</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary" onclick="window.open('manual.html', '_blank')">
+            <i class="fa-solid fa-book"></i> Manual PDF
+          </button>
+          <button class="btn btn-primary" id="btn-novo-orcamento">
+            <i class="fa-solid fa-plus"></i> Novo Orçamento
+          </button>
+          <button class="btn btn-secondary" id="btn-novo-cliente">
+            <i class="fa-solid fa-user-plus"></i> Novo Cliente
+          </button>
+        </div>
+      </header>
+
+      <!-- Dynamic Tab Views -->
+      <div class="content-body">
+
+        <!-- TAB: DASHBOARD -->
+        <section id="tab-dashboard" class="tab-pane active">
+          <!-- Metric Cards -->
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <div class="metric-icon red"><i class="fa-solid fa-sack-dollar"></i></div>
+              <div class="metric-data">
+                <span class="metric-label">Faturamento do Mês</span>
+                <h3 class="metric-value" id="dash-faturamento">R$ 0,00</h3>
+                <span class="metric-sub text-success"><i class="fa-solid fa-arrow-trend-up"></i> Atualizado hoje</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon"><i class="fa-solid fa-car"></i></div>
+              <div class="metric-data">
+                <span class="metric-label">Veículos Atendidos (Mês)</span>
+                <h3 class="metric-value" id="dash-veiculos">0</h3>
+                <span class="metric-sub">Atendimentos realizados</span>
+              </div>
+            </div>
+
+            <div class="metric-card">
+              <div class="metric-icon"><i class="fa-solid fa-receipt"></i></div>
+              <div class="metric-data">
+                <span class="metric-label">Ticket Médio</span>
+                <h3 class="metric-value" id="dash-ticket">R$ 0,00</h3>
+                <span class="metric-sub">Por serviço executado</span>
+              </div>
+            </div>
+
+            <div class="metric-card highlight">
+              <div class="metric-icon orange"><i class="fa-solid fa-clock-rotate-left"></i></div>
+              <div class="metric-data">
+                <span class="metric-label">Alertas de Manutenção (75d)</span>
+                <h3 class="metric-value text-warning" id="dash-alertas-count">0</h3>
+                <span class="metric-sub text-warning"><i class="fa-solid fa-bell"></i> Requer contato via WhatsApp</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recurrence Alert Banner -->
+          <div class="card alert-section">
+            <div class="card-header">
+              <div class="card-header-title">
+                <i class="fa-brands fa-whatsapp text-success fs-1-2"></i>
+                <div>
+                  <h3>Central de Lembretes de Manutenção</h3>
+                  <p>Acompanhe os lembretes de manutenção preventiva e dispare o contato via WhatsApp quando chegar na hora.</p>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-secondary" onclick="app.switchTab('recorrencia')">Ver Todos</button>
+            </div>
+            <div class="table-responsive">
+              <table class="table" id="dash-alertas-table">
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th>Veículo</th>
+                    <th>Serviço Original</th>
+                    <th>Data Execução</th>
+                    <th>Status do Lembrete</th>
+                    <th>Prazo Limite</th>
+                    <th>Ações WhatsApp</th>
+                  </tr>
+                </thead>
+                <tbody id="dash-alertas-tbody">
+                  <!-- JS populate -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Grid: Agenda & Recentes -->
+          <div class="grid-2-col">
+            <div class="card">
+              <div class="card-header">
+                <h3><i class="fa-solid fa-calendar-check"></i> Agendamentos do Dia</h3>
+                <button class="btn btn-sm btn-secondary" onclick="app.switchTab('agenda')">Ver Agenda</button>
+              </div>
+              <div class="card-body" id="dash-agenda-today">
+                <!-- JS populate -->
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3><i class="fa-solid fa-clock-history"></i> Orçamentos Recentes</h3>
+                <button class="btn btn-sm btn-secondary" onclick="app.switchTab('orcamentos')">Criar Orçamento</button>
+              </div>
+              <div class="card-body" id="dash-orcamentos-recientes">
+                <!-- JS populate -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: ORÇAMENTOS -->
+        <section id="tab-orcamentos" class="tab-pane">
+          <div class="grid-layout-sidebar">
+            <!-- Form: Criar Orçamento -->
+            <div class="card">
+              <div class="card-header">
+                <h3><i class="fa-solid fa-calculator"></i> Montar Orçamento Inteligente</h3>
+              </div>
+              <div class="card-body">
+                <form id="form-orcamento">
+                  <div class="form-row-2">
+                    <div class="form-group">
+                      <label>Selecionar Cliente</label>
+                      <select id="orc-cliente-select" class="form-control" required>
+                        <option value="">-- Selecione o Cliente --</option>
+                      </select>
+                    </div>
+
+                    <div class="form-group">
+                      <label>Veículo do Cliente</label>
+                      <select id="orc-veiculo-select" class="form-control" required disabled>
+                        <option value="">-- Selecione primeiro o cliente --</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Categoria do Veículo (Ajusta preços automaticamente)</label>
+                    <div class="vehicle-category-selector">
+                      <label class="cat-btn active">
+                        <input type="radio" name="categoria_veiculo" value="Hatch" checked>
+                        <i class="fa-solid fa-car-side"></i> Hatch
+                      </label>
+                      <label class="cat-btn">
+                        <input type="radio" name="categoria_veiculo" value="Sedan">
+                        <i class="fa-solid fa-car-rear"></i> Sedan
+                      </label>
+                      <label class="cat-btn">
+                        <input type="radio" name="categoria_veiculo" value="SUV">
+                        <i class="fa-solid fa-truck-pickup"></i> SUV
+                      </label>
+                      <label class="cat-btn">
+                        <input type="radio" name="categoria_veiculo" value="Caminhonete">
+                        <i class="fa-solid fa-truck-monster"></i> Caminhonete
+                      </label>
+                    </div>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Selecionar Serviços da Biblioteca</label>
+                    <div class="services-checklist-grid" id="orc-services-checkboxes">
+                      <!-- JS Populates checkboxes -->
+                    </div>
+                  </div>
+
+                  <!-- Extra custom items -->
+                  <div class="form-group">
+                    <label>Adicionar Itens Extras / Personalizados</label>
+                    <div class="extra-item-inputs">
+                      <input type="text" id="extra-nome" class="form-control" placeholder="Nome do item extra (ex: Remoção de insulfilm)">
+                      <input type="number" id="extra-preco" class="form-control" placeholder="Preço R$" step="0.01">
+                      <button type="button" class="btn btn-secondary" id="btn-add-extra"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <ul class="extra-items-list" id="extra-items-ul"></ul>
+                  </div>
+
+                  <div class="form-group">
+                    <label>Observações / Recomendações de Entrega</label>
+                    <textarea id="orc-observacoes" class="form-control" rows="3" placeholder="Ex: Manutenção de Vitrificação recomendada a cada 3 meses. Cuidados na lavagem."></textarea>
+                  </div>
+
+                  <div class="orc-summary-box">
+                    <div class="summary-line total">
+                      <span>Valor Total:</span>
+                      <strong id="orc-valor-total" class="text-primary">R$ 0,00</strong>
+                    </div>
+                  </div>
+
+                  <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                      <i class="fa-solid fa-floppy-disk"></i> Salvar Orçamento (Pendente)
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- List: Orçamentos Salvos -->
+            <div class="card">
+              <div class="card-header">
+                <h3><i class="fa-solid fa-folder-open"></i> Histórico de Orçamentos</h3>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Código</th>
+                        <th>Cliente / Veículo</th>
+                        <th>Status</th>
+                        <th>Valor</th>
+                        <th>Data</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody id="orcamentos-list-tbody">
+                      <!-- JS populate -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: BIBLIOTECA DE SERVIÇOS -->
+        <section id="tab-servicos" class="tab-pane">
+          <div class="card mb-4">
+            <div class="card-header">
+              <div>
+                <h3><i class="fa-solid fa-screwdriver-wrench"></i> Catálogo de Serviços & Checklists Internos</h3>
+                <p>Todos os serviços pré-cadastrados com variação por tipo de veículo e procedimentos de execução</p>
+              </div>
+              <button class="btn btn-primary" id="btn-novo-servico-modal">
+                <i class="fa-solid fa-plus"></i> Adicionar Novo Serviço
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="services-grid" id="services-cards-container">
+                <!-- JS Populates service cards with checklists -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: CRM CLIENTES & VEÍCULOS -->
+        <section id="tab-crm" class="tab-pane">
+          <div class="grid-layout-sidebar">
+            <div class="card">
+              <div class="card-header">
+                <h3><i class="fa-solid fa-users"></i> Lista de Clientes</h3>
+                <div class="search-box">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" id="search-cliente" class="form-control" placeholder="Buscar por nome, WhatsApp ou placa...">
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Cliente</th>
+                        <th>Contato</th>
+                        <th>Veículos Registrados</th>
+                        <th>Total Gasto (LTV)</th>
+                        <th>Ações</th>
+                      </tr>
+                    </thead>
+                    <tbody id="crm-clientes-tbody">
+                      <!-- JS populate -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Panel: Visualizar Detalhes do Cliente -->
+            <div class="card" id="crm-detail-card">
+              <div class="card-header">
+                <h3><i class="fa-solid fa-id-card"></i> Detalhes do Cliente</h3>
+              </div>
+              <div class="card-body" id="crm-client-detail-body">
+                <div class="empty-state">
+                  <i class="fa-solid fa-user-gear"></i>
+                  <p>Selecione um cliente da lista para visualizar seus veículos e histórico de atendimentos.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: LEMBRETES & MANUTENÇÕES -->
+        <section id="tab-recorrencia" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3><i class="fa-solid fa-shield-halved text-primary"></i> Lembretes de Manutenção</h3>
+                <p>Acompanhamento preventivo: o lembrete é disparado cerca de <strong>30 dias</strong> após o serviço, com prazo limite de <strong>45 dias</strong>.</p>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="recorrencia-stats mb-4">
+                <div class="stat-box warning">
+                  <span class="title">Lembretes Pendentes</span>
+                  <span class="num" id="rec-stat-alerta">0</span>
+                </div>
+                <div class="stat-box danger">
+                  <span class="title">Vencidos</span>
+                  <span class="num" id="rec-stat-vencido">0</span>
+                </div>
+                <div class="stat-box success">
+                  <span class="title">Manutenções Realizadas</span>
+                  <span class="num" id="rec-stat-concluidos">0</span>
+                </div>
+              </div>
+
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Cliente / Telefone</th>
+                      <th>Veículo & Placa</th>
+                      <th>Serviço Original</th>
+                      <th>Ciclo Atual</th>
+                      <th>Data Aplicação</th>
+                      <th>Lembrete</th>
+                      <th>Prazo Limite</th>
+                      <th>Ação WhatsApp</th>
+                      <th>Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody id="recorrencia-table-tbody">
+                    <!-- JS populate -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: AGENDA -->
+        <section id="tab-agenda" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3><i class="fa-solid fa-calendar-days"></i> Agenda de Serviços</h3>
+                <p>Calendário completo, filtros por dia, semana, mês ou período personalizado</p>
+              </div>
+              <button class="btn btn-primary" id="btn-novo-agendamento">
+                <i class="fa-solid fa-calendar-plus"></i> Agendar Serviço
+              </button>
+            </div>
+            <div class="card-body">
+              <div class="agenda-layout">
+                <!-- Calendário de Navegação -->
+                <aside class="agenda-calendar-panel">
+                  <div class="agenda-calendar-header">
+                    <button type="button" class="btn btn-sm btn-secondary cal-nav-btn" onclick="app.navigateAgendaMonth(-1)" aria-label="Mês anterior">
+                      <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <span id="agenda-calendar-label" class="agenda-calendar-label">Agosto 2026</span>
+                    <button type="button" class="btn btn-sm btn-secondary cal-nav-btn" onclick="app.navigateAgendaMonth(1)" aria-label="Próximo mês">
+                      <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                  </div>
+                  <div id="agenda-calendar-grid" class="agenda-calendar-grid">
+                    <!-- JS populates calendar -->
+                  </div>
+                  <button type="button" class="btn btn-secondary btn-block mt-2" onclick="app.goToAgendaToday()">
+                    <i class="fa-solid fa-calendar-day"></i> Ir para Hoje
+                  </button>
+                </aside>
+
+                <!-- Lista de Agendamentos -->
+                <div class="agenda-list-panel">
+                  <div class="agenda-controls">
+                    <div class="form-group agenda-date-field">
+                      <label>Data de Referência</label>
+                      <input type="date" id="agenda-date-picker" class="form-control">
+                    </div>
+                    <div class="agenda-filter-buttons">
+                      <button class="btn btn-secondary active" id="btn-agenda-dia" onclick="app.setAgendaFilterMode('day')">Dia</button>
+                      <button class="btn btn-secondary" id="btn-agenda-semana" onclick="app.setAgendaFilterMode('week')">Semana</button>
+                      <button class="btn btn-secondary" id="btn-agenda-mes" onclick="app.setAgendaFilterMode('month')">Mês</button>
+                      <button class="btn btn-secondary" id="btn-agenda-range" onclick="app.setAgendaFilterMode('range')">Período</button>
+                      <button class="btn btn-secondary" id="btn-agenda-todos" onclick="app.setAgendaFilterMode('all')">Todos</button>
+                    </div>
+                  </div>
+
+                  <div id="agenda-range-filters" class="agenda-range-filters" style="display:none;">
+                    <div class="form-group">
+                      <label>Data Inicial</label>
+                      <input type="date" id="agenda-range-start" class="form-control">
+                    </div>
+                    <div class="form-group">
+                      <label>Data Final</label>
+                      <input type="date" id="agenda-range-end" class="form-control">
+                    </div>
+                  </div>
+
+                  <div class="agenda-period-header">
+                    <h4 id="agenda-period-label">--</h4>
+                    <span id="agenda-count-label" class="text-muted">0 agendamentos</span>
+                  </div>
+
+                  <div id="agenda-list-container" class="agenda-simple-list">
+                    <!-- JS Populates agenda list -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: FINANCEIRO -->
+        <section id="tab-financeiro" class="tab-pane">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <h3><i class="fa-solid fa-cash-register"></i> Controle Financeiro</h3>
+                <p>Entradas, saídas e movimentações do caixa</p>
+              </div>
+              <button class="btn btn-primary" id="btn-nova-transacao"><i class="fa-solid fa-plus"></i> Novo Lançamento</button>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Descrição</th>
+                      <th>Tipo</th>
+                      <th>Valor</th>
+                      <th>Data</th>
+                      <th style="width: 100px;">Ação</th>
+                    </tr>
+                  </thead>
+                  <tbody id="financeiro-tbody">
+                    <!-- JS populate -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB: CONFIGURAÇÕES & BACKUP -->
+        <section id="tab-configuracoes" class="tab-pane">
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-database"></i> Backup de Dados e Dados Demonstrativos</h3>
+            </div>
+            <div class="card-body">
+              <p>Gerencie as informações do seu CRM de Estética Automotiva localmente.</p>
+              <div class="btn-group gap-2">
+                <button class="btn btn-primary" id="btn-export-backup">
+                  <i class="fa-solid fa-download"></i> Baixar Backup em JSON
+                </button>
+                <label class="btn btn-secondary" style="cursor: pointer;">
+                  <i class="fa-solid fa-upload"></i> Restaurar Backup JSON
+                  <input type="file" id="input-import-backup" accept=".json" style="display: none;">
+                </label>
+                <button class="btn btn-danger" id="btn-reset-demo">
+                  <i class="fa-solid fa-rotate-left"></i> Carregar Dados Demonstrativos
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card mb-4">
+            <div class="card-header">
+              <h3><i class="fa-solid fa-palette"></i> Aparência & Cor de Marca</h3>
+            </div>
+            <div class="card-body">
+              <p>Escolha a cor de destaque do sistema. A preferência fica salva neste dispositivo.</p>
+              <div class="theme-swatches" id="theme-swatches">
+                <button type="button" class="theme-swatch" data-theme="azul" style="--sw:#2563eb;" title="Azul"></button>
+                <button type="button" class="theme-swatch" data-theme="verde" style="--sw:#16a34a;" title="Verde"></button>
+                <button type="button" class="theme-swatch" data-theme="vermelho" style="--sw:#dc2626;" title="Vermelho"></button>
+                <button type="button" class="theme-swatch" data-theme="roxo" style="--sw:#7c3aed;" title="Roxo"></button>
+                <button type="button" class="theme-swatch" data-theme="laranja" style="--sw:#ea580c;" title="Laranja"></button>
+                <button type="button" class="theme-swatch" data-theme="grafite" style="--sw:#475569;" title="Grafite"></button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Modal: Novo Cliente -->
+  <div class="modal-backdrop" id="modal-cliente">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Cadastrar Novo Cliente</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-cliente')">&times;</button>
+      </div>
+      <form id="form-cliente">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nome Completo</label>
+            <input type="text" id="cli-nome" class="form-control" required placeholder="Ex: João da Silva">
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>WhatsApp / Telefone</label>
+              <input type="tel" id="cli-whatsapp" class="form-control" required placeholder="(16) 99999-9999">
+            </div>
+            <div class="form-group">
+              <label>E-mail</label>
+              <input type="email" id="cli-email" class="form-control" placeholder="joao@email.com">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Endereço</label>
+            <input type="text" id="cli-endereco" class="form-control" placeholder="Rua, Número, Bairro - Cidade">
+          </div>
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea id="cli-observacoes" class="form-control" rows="2" placeholder="Preferências, restrições, histórico relevante..."></textarea>
+          </div>
+
+          <hr class="my-3">
+          <h4>Dados do Primeiro Veículo</h4>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Modelo do Carro</label>
+              <input type="text" id="vei-modelo" class="form-control" required placeholder="Ex: Toyota Corolla">
+            </div>
+            <div class="form-group">
+              <label>Placa</label>
+              <input type="text" id="vei-placa" class="form-control" required placeholder="ABC-1D23">
+            </div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label>Categoria</label>
+              <select id="vei-categoria" class="form-control" required>
+                <option value="Hatch">Hatch</option>
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">SUV</option>
+                <option value="Caminhonete">Caminhonete</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Ano / Cor</label>
+              <input type="text" id="vei-anocor" class="form-control" placeholder="2022 / Preto Carbono">
+            </div>
+            <div class="form-group">
+              <label>Quilometragem</label>
+              <input type="number" id="vei-km" class="form-control" placeholder="45000">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-cliente')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Salvar Cliente e Veículo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Cliente -->
+  <div class="modal-backdrop" id="modal-editar-cliente">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Dados do Cliente</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-editar-cliente')">&times;</button>
+      </div>
+      <form id="form-editar-cliente">
+        <input type="hidden" id="edit-cli-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nome Completo</label>
+            <input type="text" id="edit-cli-nome" class="form-control" required>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>WhatsApp / Telefone</label>
+              <input type="tel" id="edit-cli-whatsapp" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>E-mail</label>
+              <input type="email" id="edit-cli-email" class="form-control">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Endereço</label>
+            <input type="text" id="edit-cli-endereco" class="form-control">
+          </div>
+          <div class="form-group">
+            <label>Observações</label>
+            <textarea id="edit-cli-observacoes" class="form-control" rows="3" placeholder="Preferências, restrições, histórico relevante..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-editar-cliente')">Cancelar</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Adicionar / Editar Veículo -->
+  <div class="modal-backdrop" id="modal-veiculo">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modal-veiculo-title">Cadastrar Novo Veículo</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-veiculo')">&times;</button>
+      </div>
+      <form id="form-veiculo">
+        <input type="hidden" id="vei-cli-id">
+        <input type="hidden" id="vei-edit-id">
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Modelo do Carro</label>
+              <input type="text" id="mvei-modelo" class="form-control" required placeholder="Ex: Honda Civic">
+            </div>
+            <div class="form-group">
+              <label>Placa</label>
+              <input type="text" id="mvei-placa" class="form-control" required placeholder="ABC-1D23">
+            </div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label>Categoria</label>
+              <select id="mvei-categoria" class="form-control" required>
+                <option value="Hatch">Hatch</option>
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">SUV</option>
+                <option value="Caminhonete">Caminhonete</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Ano / Cor</label>
+              <input type="text" id="mvei-anocor" class="form-control" placeholder="2023 / Prata">
+            </div>
+            <div class="form-group">
+              <label>Quilometragem</label>
+              <input type="number" id="mvei-km" class="form-control" placeholder="30000">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-veiculo')">Cancelar</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar Veículo</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Lembrete -->
+  <div class="modal-backdrop" id="modal-editar-lembrete">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Lembrete de Manutenção</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-editar-lembrete')">&times;</button>
+      </div>
+      <form id="form-editar-lembrete">
+        <input type="hidden" id="edit-rec-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Cliente</label>
+            <input type="text" id="edit-rec-cliente" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Veículo & Placa</label>
+            <input type="text" id="edit-rec-veiculo" class="form-control" required>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Ciclo Atual</label>
+              <input type="text" id="edit-rec-ciclo" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Status</label>
+              <select id="edit-rec-status" class="form-control" required>
+                <option value="EM ANDAMENTO">EM ANDAMENTO</option>
+                <option value="ALERTA MANUTENÇÃO">ALERTA MANUTENÇÃO</option>
+                <option value="VENCIDO">VENCIDO</option>
+                <option value="CONCLUÍDO">CONCLUÍDO</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row-3">
+            <div class="form-group">
+              <label>Data Aplicação</label>
+              <input type="date" id="edit-rec-data-app" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Data do Lembrete</label>
+              <input type="date" id="edit-rec-data-75" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Data Limite</label>
+              <input type="date" id="edit-rec-data-90" class="form-control" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-editar-lembrete')">Cancelar</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar Lembrete</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Editar Serviço -->
+  <div class="modal-backdrop" id="modal-editar-servico">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Editar Serviço</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-editar-servico')">&times;</button>
+      </div>
+      <form id="form-editar-servico">
+        <input type="hidden" id="edit-srv-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nome do Serviço</label>
+            <input type="text" id="edit-srv-nome" class="form-control" required placeholder="Ex: Polimento Técnico com Vitrificação">
+          </div>
+          <div class="form-group">
+            <label>Categoria</label>
+            <select id="edit-srv-categoria" class="form-control" required>
+              <option value="Lavagens">Lavagens</option>
+              <option value="Polimentos">Polimentos</option>
+              <option value="Proteção">Proteção</option>
+              <option value="Higienização">Higienização</option>
+              <option value="Restauração">Restauração</option>
+              <option value="Geral">Geral</option>
+            </select>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Preço Hatch (R$)</label>
+              <input type="number" id="edit-srv-hatch" class="form-control" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+              <label>Preço Sedan (R$)</label>
+              <input type="number" id="edit-srv-sedan" class="form-control" step="0.01" min="0" required>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Preço SUV (R$)</label>
+              <input type="number" id="edit-srv-suv" class="form-control" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+              <label>Preço Caminhonete (R$)</label>
+              <input type="number" id="edit-srv-caminhonete" class="form-control" step="0.01" min="0" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Checklist de Execução (itens separados por vírgula)</label>
+            <textarea id="edit-srv-checklist" class="form-control" rows="3" placeholder="Item 1, Item 2, Item 3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-editar-servico')">Cancelar</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Novo Serviço -->
+  <div class="modal-backdrop" id="modal-novo-servico">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Adicionar Novo Serviço</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-novo-servico')">&times;</button>
+      </div>
+      <form id="form-novo-servico">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Nome do Serviço</label>
+            <input type="text" id="novo-srv-nome" class="form-control" required placeholder="Ex: Polimento Técnico com Vitrificação">
+          </div>
+          <div class="form-group">
+            <label>Categoria</label>
+            <select id="novo-srv-categoria" class="form-control" required>
+              <option value="Lavagens">Lavagens</option>
+              <option value="Polimentos">Polimentos</option>
+              <option value="Proteção">Proteção</option>
+              <option value="Higienização">Higienização</option>
+              <option value="Restauração">Restauração</option>
+              <option value="Geral">Geral</option>
+            </select>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Preço Hatch (R$)</label>
+              <input type="number" id="novo-srv-hatch" class="form-control" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+              <label>Preço Sedan (R$)</label>
+              <input type="number" id="novo-srv-sedan" class="form-control" step="0.01" min="0" required>
+            </div>
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Preço SUV (R$)</label>
+              <input type="number" id="novo-srv-suv" class="form-control" step="0.01" min="0" required>
+            </div>
+            <div class="form-group">
+              <label>Preço Caminhonete (R$)</label>
+              <input type="number" id="novo-srv-caminhonete" class="form-control" step="0.01" min="0" required>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Checklist de Execução (itens separados por vírgula)</label>
+            <textarea id="novo-srv-checklist" class="form-control" rows="3" placeholder="Item 1, Item 2, Item 3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-novo-servico')">Cancelar</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Adicionar Serviço</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Novo Agendamento -->
+  <div class="modal-backdrop" id="modal-agendamento">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Agendar Atendimento</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-agendamento')">&times;</button>
+      </div>
+      <form id="form-agendamento">
+        <div class="modal-body">
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Data</label>
+              <input type="date" id="agd-data" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Horário</label>
+              <input type="time" id="agd-hora" class="form-control" required value="09:00">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Cliente / Veículo</label>
+            <select id="agd-cliente-veiculo" class="form-control" required>
+              <!-- JS Populates -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Serviço Principal</label>
+            <input type="text" id="agd-servico" class="form-control" required placeholder="Ex: Lavagem Nível 2 + Hidratação de Couro">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-agendamento')">Cancelar</button>
+          <button type="submit" class="btn btn-primary">Confirmar Agendamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Agendar Serviço do Orçamento Aprovado -->
+  <div class="modal-backdrop" id="modal-agendamento-orcamento">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-calendar-check text-success"></i> Agendar Serviço Aprovado</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-agendamento-orcamento')">&times;</button>
+      </div>
+      <form id="form-agendamento-orcamento">
+        <input type="hidden" id="agd-orc-id">
+        <div class="modal-body">
+          <p class="text-muted" style="margin-bottom:14px;">
+            O orçamento foi <strong class="text-success">Aprovado</strong>. Escolha a data e o horário do atendimento —
+            ele será adicionado automaticamente à <strong>Agenda</strong>.
+          </p>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Data do Agendamento</label>
+              <input type="date" id="agd-orc-data" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Horário</label>
+              <input type="time" id="agd-orc-hora" class="form-control" required value="09:00">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Cliente / Veículo</label>
+            <select id="agd-orc-cliente-veiculo" class="form-control" required>
+              <!-- JS Populates -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Serviço a Executar</label>
+            <input type="text" id="agd-orc-servico" class="form-control" required placeholder="Ex: Lavagem Nível 2 + Hidratação de Couro">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-agendamento-orcamento')">Cancelar</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-calendar-plus"></i> Confirmar e Agendar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Novo Lançamento Financeiro -->
+  <div class="modal-backdrop" id="modal-transacao">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Novo Lançamento Financeiro</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-transacao')">&times;</button>
+      </div>
+      <form id="form-transacao">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Descrição</label>
+            <input type="text" id="fin-descricao" class="form-control" required placeholder="Ex: Pagamento do aluguel, Venda avulsa, Compra de produtos...">
+          </div>
+          <div class="form-row-2">
+            <div class="form-group">
+              <label>Tipo</label>
+              <select id="fin-tipo" class="form-control" required>
+                <option value="Receita">Receita (Entrada)</option>
+                <option value="Despesa">Despesa (Saída)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Valor (R$)</label>
+              <input type="number" id="fin-valor" class="form-control" required step="0.01" min="0.01" placeholder="0,00">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Data</label>
+            <input type="date" id="fin-data" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-transacao')">Cancelar</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Salvar Lançamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- IMPRESSÃO PDF TEMPLATE (OCULTO EM TELA, VISÍVEL NO PRINT) -->
+  <div id="print-pdf-wrapper">
+    <div class="pdf-document" id="pdf-content">
+      <div class="pdf-header">
+        <div class="pdf-brand">
+          <span class="pdf-brand-text">MAZYOS</span>
+          <div>
+            <h1>MAZYOS</h1>
+            <h2>CRM DE ESTÉTICA</h2>
+            <p>Cuidado Técnico & Proteção de Alto Padrão</p>
+          </div>
+        </div>
+        <div class="pdf-meta">
+          <h3>ORÇAMENTO <span id="pdf-codigo">#0001</span></h3>
+          <p><strong>Data:</strong> <span id="pdf-data">06/08/2026</span></p>
+          <p><strong>Validade:</strong> 15 dias</p>
+        </div>
+      </div>
+
+      <div class="pdf-grid-2">
+        <div class="pdf-box">
+          <h4>DADOS DA EMPRESA</h4>
+          <p><strong>Empresa:</strong> Sua Estética Automotiva</p>
+          <p><strong>CNPJ:</strong> 00.000.000/0001-00</p>
+          <p><strong>Atendimento:</strong> (00) 00000-0000</p>
+          <p><strong>E-mail:</strong> contato@suaestetica.com.br</p>
+        </div>
+        <div class="pdf-box">
+          <h4>DADOS DO CLIENTE & VEÍCULO</h4>
+          <p><strong>Cliente:</strong> <span id="pdf-cliente-nome">--</span></p>
+          <p><strong>WhatsApp:</strong> <span id="pdf-cliente-whats">--</span></p>
+          <p><strong>Veículo:</strong> <span id="pdf-veiculo-info">--</span></p>
+          <p><strong>Categoria:</strong> <span id="pdf-veiculo-cat">--</span></p>
+        </div>
+      </div>
+
+      <div class="pdf-section">
+        <h4>SERVIÇOS CONTRATADOS & CHECKLIST DE EXECUÇÃO</h4>
+        <div id="pdf-servicos-container" class="pdf-services-list-wrapper">
+          <!-- JS Populates clean bullet list -->
+        </div>
+      </div>
+
+      <div class="pdf-section" id="pdf-obs-container">
+        <h4>OBSERVAÇÕES & RECOMENDAÇÕES</h4>
+        <p id="pdf-observacoes-txt">--</p>
+      </div>
+
+      <div class="pdf-total-box">
+        <div class="pdf-total-row total-highlight">
+          <span>VALOR TOTAL DO ORÇAMENTO:</span>
+          <strong id="pdf-valor-total">R$ 0,00</strong>
+        </div>
+      </div>
+
+      <div class="pdf-footer">
+        <p>Agradecemos a confiança! MazyOS — CRM de Estética Automotiva.</p>
+        <p class="pdf-dev">Desenvolvido por Freze Labs</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation -->
+  <nav class="mobile-bottom-nav" aria-label="Navegação principal mobile">
+    <a href="#dashboard" class="mobile-nav-item active" data-tab="dashboard">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Início</span>
+    </a>
+    <a href="#orcamentos" class="mobile-nav-item" data-tab="orcamentos">
+      <i class="fa-solid fa-file-invoice-dollar"></i>
+      <span>Orçamentos</span>
+    </a>
+    <a href="#servicos" class="mobile-nav-item" data-tab="servicos">
+      <i class="fa-solid fa-list-check"></i>
+      <span>Serviços</span>
+    </a>
+    <a href="#crm" class="mobile-nav-item" data-tab="crm">
+      <i class="fa-solid fa-address-book"></i>
+      <span>Clientes</span>
+    </a>
+    <a href="#recorrencia" class="mobile-nav-item" data-tab="recorrencia">
+      <i class="fa-solid fa-bell"></i>
+      <span>Lembretes</span>
+    </a>
+    <a href="#agenda" class="mobile-nav-item" data-tab="agenda">
+      <i class="fa-solid fa-calendar-days"></i>
+      <span>Agenda</span>
+    </a>
+    <a href="#financeiro" class="mobile-nav-item" data-tab="financeiro">
+      <i class="fa-solid fa-wallet"></i>
+      <span>Financeiro</span>
+    </a>
+    <a href="#configuracoes" class="mobile-nav-item" data-tab="configuracoes">
+      <i class="fa-solid fa-gear"></i>
+      <span>Config</span>
+    </a>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>

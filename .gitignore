@@ -1,0 +1,29 @@
+# === MazyOS — CRM de Estética Automotiva ===
+# Arquivos gerados em runtime / dados locais que NÃO vão para o repositório.
+
+# Backups e saídas geradas pelo usuário (PDFs, JSON de backup, exports)
+saidas/
+dados/backups/
+*.backup.json
+
+# Arquivos de sistema / OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editores
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Node (se algum tooling futuro usar)
+node_modules/
+
+# Arquivos de ambiente / segredos (nunca committar)
+.env
+.env.*
+*.secret

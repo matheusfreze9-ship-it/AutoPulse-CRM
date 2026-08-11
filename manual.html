@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Manual do Usuário — MazyOS (CRM de Estética Automotiva)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    :root {
+      --red: #2563eb;
+      --dark: #0d0d0d;
+      --card-bg: #161616;
+      --text: #f3f4f6;
+      --muted: #9ca3af;
+      --border: #262626;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--dark);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 40px 20px;
+    }
+
+    .manual-container {
+      max-width: 850px;
+      margin: 0 auto;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+
+    .manual-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid var(--red);
+      padding-bottom: 24px;
+      margin-bottom: 32px;
+    }
+
+    .brand-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .manual-logo-img {
+      width: 75px;
+      height: 75px;
+      object-fit: contain;
+      border-radius: 8px;
+      background-color: #000;
+      padding: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .brand-title h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 26pt;
+      font-weight: 900;
+      color: var(--red);
+      letter-spacing: 1px;
+      margin: 0;
+    }
+
+    .brand-title p {
+      font-size: 11pt;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 1.5px;
+    }
+
+    .header-badge {
+      background-color: rgba(37, 99, 235, 0.15);
+      border: 1px solid var(--red);
+      color: var(--text);
+      padding: 12px 18px;
+      border-radius: 8px;
+      text-align: right;
+      font-size: 0.85rem;
+    }
+
+    .header-badge strong { font-size: 11pt; color: var(--red); }
+
+    .print-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1f1f1f;
+      padding: 14px 20px;
+      border-radius: 10px;
+      margin-bottom: 32px;
+      border: 1px solid var(--border);
+    }
+
+    .btn-print {
+      background-color: var(--red);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-card {
+      background-color: #0f0f0f;
+      border: 1px solid var(--border);
+      border-left: 5px solid var(--red);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+
+    .step-number {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--red);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .step-card h3 {
+      font-size: 1.15rem;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .step-card p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    .step-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .step-list li {
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .step-list li i {
+      color: var(--red);
+      margin-top: 4px;
+    }
+
+    .company-details-card {
+      background-color: #161616;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 28px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .company-detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .company-detail-item span {
+      font-size: 0.75rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .company-detail-item strong {
+      font-size: 0.95rem;
+      color: #fff;
+    }
+
+    .highlight-box {
+      background-color: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      border-radius: 8px;
+      padding: 16px;
+      margin-top: 12px;
+      color: #f59e0b;
+      font-size: 0.9rem;
+    }
+
+    .highlight-box strong { color: #fff; }
+
+    .manual-footer {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      margin-top: 40px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    @media print {
+      body { background-color: #fff; color: #000; padding: 0; }
+      .manual-container { background-color: #fff; color: #111; border: none; box-shadow: none; padding: 0; }
+      .print-bar { display: none; }
+      .step-card { background-color: #f9f9f9; border-color: #ddd; border-left-color: #2563eb; color: #111; }
+      .step-card h3 { color: #2563eb; }
+      .step-card p, .step-list li { color: #333; }
+      .brand-title h1 { color: #2563eb; }
+      .company-details-card { background-color: #f8f8f8; border-color: #ddd; }
+      .company-detail-item strong { color: #111; }
+      .highlight-box { background-color: #fff8e6; border-color: #ffe0b2; color: #b78103; }
+      .highlight-box strong { color: #111; }
+    }
+
+    @media (max-width: 600px) {
+      .company-details-card { grid-template-columns: 1fr; }
+      .manual-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .header-badge { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="manual-container">
+    
+    <div class="print-bar">
+      <span><i class="fa-solid fa-file-pdf"></i> <strong>Manual Prático do Usuário</strong> — Pronto para Imprimir / Salvar em PDF</span>
+      <button class="btn-print" onclick="window.print()">
+        <i class="fa-solid fa-print"></i> Baixar PDF / Imprimir
+      </button>
+    </div>
+
+    <div class="manual-header">
+      <div class="brand-title-wrap">
+        <div class="manual-brand-text">MAZY<b>OS</b></div>
+        <div class="brand-title">
+          <h1>MAZYOS</h1>
+          <p>CRM DE ESTÉTICA AUTOMOTIVA</p>
+        </div>
+      </div>
+      <div class="header-badge">
+        <strong>GUIA OPERACIONAL DO CRM</strong><br>
+        <small>Manual Oficial de Utilização</small>
+      </div>
+    </div>
+
+    <!-- CARTOES DE INFORMACAO DA EMPRESA -->
+    <div class="company-details-card">
+      <div class="company-detail-item">
+        <span>CNPJ da Empresa</span>
+        <strong>46.404.305/0001-60</strong>
+      </div>
+      <div class="company-detail-item">
+        <span>Telefone / WhatsApp</span>
+        <strong>(16) 99729-3434</strong>
+      </div>
+      <div class="company-detail-item">
+        <span>E-mail de Contato</span>
+        <strong>contato@suaestetica.com.br</strong>
+      </div>
+    </div>
+
+    <!-- PASSO 1 -->
+    <div class="step-card">
+      <div class="step-number"><i class="fa-solid fa-chart-line"></i> PASSO 1</div>
+      <h3>Dashboard Executivo</h3>
+      <p>O Dashboard apresenta métricas em tempo real sobre os serviços <strong>aprovados</strong> e executados:</p>
+      <ul class="step-list">
+        <li><i class="fa-solid fa-check"></i> <strong>Faturamento do Mês:</strong> Soma dos orçamentos aprovados no período.</li>
+        <li><i class="fa-solid fa-check"></i> <strong>Veículos Atendidos:</strong> Total de atendimentos concluídos com sucesso.</li>
+        <li><i class="fa-solid fa-check"></i> <strong>Alertas de Manutenção:</strong> Exibe o número de clientes que necessitam de contato via WhatsApp para revisão da proteção da pintura.</li>
+      </ul>
+    </div>
+
+    <!-- PASSO 2 -->
+    <div class="step-card">
+      <div class="step-number"><i class="fa-solid fa-file-invoice-dollar"></i> PASSO 2</div>
+      <h3>Orçamentos & Fluxo de Aprovação</h3>
+      <p>Crie orçamentos limpos em PDF e aprove-os somente após confirmação do cliente:</p>
+      <ul class="step-list">
+        <li><i class="fa-solid fa-circle-1"></i> <strong>Montagem do Orçamento:</strong> Selecione Cliente, Veículo e Categoria (<em>Hatch, Sedan, SUV, Caminhonete</em>).</li>
+        <li><i class="fa-solid fa-circle-2"></i> <strong>Status PENDENTE:</strong> Ao salvar, o orçamento inicia como <strong>PENDENTE</strong>. O lembrete de vitrificação NÃO é gerado de imediato.</li>
+        <li><i class="fa-solid fa-circle-3"></i> <strong>Envio em PDF:</strong> Envie o orçamento em lista (bullet list) via WhatsApp para avaliação do cliente.</li>
+        <li><i class="fa-solid fa-circle-4"></i> <strong>Aprovar Serviço:</strong> Quando o cliente aprovar, clique no botão verde <strong>"Aprovar"</strong>. Nesse momento o sistema credita o valor no Financeiro e gera o lembrete automático de manutenção (cerca de 30 dias após o serviço).</li>
+      </ul>
+    </div>
+
+    <!-- PASSO 3 -->
+    <div class="step-card">
+      <div class="step-number"><i class="fa-solid fa-shield-halved"></i> PASSO 3</div>
+      <h3>Motor de Lembretes (Edição, Exclusão & Google Agenda)</h3>
+      <p>Gerencie preventivamente os avisos de manutenção:</p>
+      <ul class="step-list">
+        <li><i class="fa-solid fa-bell"></i> <strong>Aviso de Manutenção:</strong> O alerta é disparado cerca de 30 dias após o serviço, com prazo limite de 45 dias.</li>
+        <li><i class="fa-brands fa-whatsapp"></i> <strong>WhatsApp & Google Agenda:</strong> Dispare mensagens pré-formatadas no WhatsApp ou adicione eventos no calendário do smartphone em 1 clique.</li>
+        <li><i class="fa-solid fa-pen-to-square"></i> <strong>Editar e Excluir Lembretes:</strong> Utilize os botões de **Editar** para alterar datas ou **Excluir** para remover qualquer lembrete manualmente.</li>
+        <li><i class="fa-solid fa-rotate"></i> <strong>Renovação de Ciclos:</strong> Clique em **"Concluir Manutenção"** ao realizar o serviço para agendar automaticamente o próximo ciclo (1ª → 2ª → 3ª Manutenção).</li>
+      </ul>
+    </div>
+
+    <!-- PASSO 4 -->
+    <div class="step-card">
+      <div class="step-number"><i class="fa-solid fa-address-book"></i> PASSO 4</div>
+      <h3>Cadastro de Clientes & Múltiplos Veículos</h3>
+      <p>Cadastre múltiplos veículos por cliente e edite dados quando precisar:</p>
+      <ul class="step-list">
+        <li><i class="fa-solid fa-check"></i> <strong>Múltiplos Veículos por Cliente:</strong> Um único cliente pode possuir vários carros cadastrados (ex: João Silva → Corolla, Hilux, Civic). Clique em <strong>"+ Adicionar Veículo"</strong> na tela de Detalhes.</li>
+        <li><i class="fa-solid fa-pen-to-square"></i> <strong>Edição Completa:</strong> Edite Nome, WhatsApp, E-mail, Endereço ou dados de qualquer veículo existente sem ter que apagar o cadastro.</li>
+      </ul>
+    </div>
+
+    <!-- PASSO 5 -->
+    <div class="step-card">
+      <div class="step-number"><i class="fa-solid fa-calendar-days"></i> PASSO 5</div>
+      <h3>Agenda Expandida & Otimização Mobile</h3>
+      <ul class="step-list">
+        <li><i class="fa-solid fa-calendar-week"></i> <strong>Navegação da Agenda:</strong> Alterne facilmente entre a visualização <strong>Por Data</strong>, <strong>Próximos 7 Dias (Semana)</strong> e <strong>Todos os Agendamentos</strong>.</li>
+        <li><i class="fa-solid fa-mobile-screen-button"></i> <strong>UX App Nativo em Smartphones:</strong> O CRM foi travado contra seleções de texto e ampliações acidentais via toque de pinça, oferecendo navegação fluida em celulares.</li>
+      </ul>
+    </div>
+
+    <div class="manual-footer">
+      <p>MazyOS — CRM de Estética Automotiva — CNPJ: 00.000.000/0001-00 | (00) 00000-0000 | contato@suaestetica.com.br</p>
+      <small>Desenvolvido por Freze Labs</small>
+    </div>
+
+  </div>
+
+  <script>
+    if (window.location.search.includes('print=true')) {
+      window.print();
+    }
+  </script>
+</body>
+</html>
