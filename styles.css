@@ -18,7 +18,7 @@
   --primary-glow: rgba(37, 99, 235, 0.25);
 
   --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
+  --text-muted: #aab4c0;
   --text-dark: #6b7280;
   --text-on-brand: #fff;          /* texto sobre a cor de marca / fundos escuros */
   --brand-bg: #000;               /* fundo da "logo" no header/sidebar */
@@ -62,7 +62,7 @@ body.light-mode {
   --border-color-light: #cbd5e1;
 
   --text-main: #0f172a;
-  --text-muted: #64748b;
+  --text-muted: #475569;
   --text-dark: #94a3b8;
   --text-on-brand: #ffffff;
   --brand-bg: #0f172a;
@@ -144,7 +144,7 @@ body {
   font-size: 1.15rem;
   font-weight: 900;
   letter-spacing: 1px;
-  color: var(--text-on-brand);
+  color: var(--text-main);
   line-height: 1;
 }
 
@@ -276,7 +276,7 @@ body {
   font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 800;
-  color: var(--text-on-brand);
+  color: var(--text-main);
 }
 
 .topbar-title p {
@@ -415,7 +415,7 @@ body {
   font-family: var(--font-heading);
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--text-on-brand);
+  color: var(--text-main);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -497,7 +497,7 @@ body {
   font-family: var(--font-heading);
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--text-on-brand);
+  color: var(--text-main);
   margin: 2px 0;
 }
 
@@ -585,7 +585,7 @@ body {
 .cat-btn.active {
   background-color: rgba(37, 99, 235, 0.15);
   border-color: var(--primary);
-  color: var(--text-on-brand);
+  color: var(--text-main);
 }
 
 /* Services Checklist Component */
@@ -628,7 +628,7 @@ body {
 .service-chk-info h5 {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-on-brand);
+  color: var(--text-main);
 }
 
 .service-chk-info p {
@@ -765,7 +765,7 @@ body {
   font-family: var(--font-heading);
   font-size: 1rem;
   font-weight: 700;
-  color: var(--text-on-brand);
+  color: var(--text-main);
 }
 
 .checklist-box {
@@ -845,7 +845,7 @@ body {
 .agenda-slot-item .client {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-on-brand);
+  color: var(--text-main);
 }
 
 .agenda-slot-item .service {
@@ -878,7 +878,7 @@ body {
   font-family: var(--font-heading);
   font-size: 1.6rem;
   font-weight: 800;
-  color: var(--text-on-brand);
+  color: var(--text-main);
   margin-top: 4px;
 }
 
@@ -957,7 +957,7 @@ body.modal-open {
 .modal-header h3 {
   font-family: var(--font-heading);
   font-size: 1.1rem;
-  color: var(--text-on-brand);
+  color: var(--text-main);
 }
 
 .modal-close {
@@ -1018,7 +1018,7 @@ body.modal-open {
 
 .agenda-item-info h4 {
   font-size: 1rem;
-  color: var(--text-on-brand);
+  color: var(--text-main);
   margin-bottom: 2px;
 }
 
@@ -1063,7 +1063,7 @@ body.modal-open {
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 0.95rem;
-  color: var(--text-on-brand);
+  color: var(--text-main);
   text-align: center;
   flex: 1;
 }
@@ -1210,7 +1210,7 @@ body.modal-open {
 .agenda-period-header h4 {
   font-family: var(--font-heading);
   font-size: 1rem;
-  color: var(--text-on-brand);
+  color: var(--text-main);
 }
 
 .agenda-empty-state {
