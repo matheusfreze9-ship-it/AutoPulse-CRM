@@ -1,5 +1,5 @@
 /**
- * FrezeLabs (CRM de Estética Automotiva) — CORE CRM ENGINE
+ * AutoPulse (Gestão Automotiva) — CORE CRM ENGINE
  * Single Page Application Logic, Storage & Recurrence Engine (Manutenção Preventiva)
  */
 

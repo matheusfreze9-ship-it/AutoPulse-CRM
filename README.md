@@ -1,8 +1,8 @@
-# FrezeLabs — CRM de Estética Automotiva
+# AutoPulse — Gestão Automotiva
 
 Sistema de gestão (CRM) completo para estéticas automotivas, lavagens detalhadas, polimentos, vitrificação e proteção de pintura. Desenvolvido para rodar **100% no navegador** (computador ou celular), sem servidor e sem banco de dados externo — os dados ficam salvos localmente no próprio dispositivo.
 
-> Template neutro, pronto para demonstração e revenda a múltiplos clientes. Para usar em uma estética específica, basta ajustar o nome da empresa e a cor de marca (ver seção **Personalização**). Desenvolvido por **Freze Labs**.
+> Template neutro, pronto para demonstração e revenda a múltiplos clientes. Para usar em uma estética específica, basta ajustar o nome da empresa e a cor de marca (ver seção **Personalização**). Criado por **Freze**.
 
 ## O que o sistema faz
 
@@ -60,4 +60,4 @@ scripts/          → scripts auxiliares
 
 ---
 
-Sistema FrezeLabs (CRM de Estética Automotiva) — template de demonstração e revenda. Desenvolvido por **Freze Labs**.
+Sistema AutoPulse (Gestão Automotiva) — template de demonstração e revenda. Criado por **Freze**.
