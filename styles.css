@@ -122,7 +122,7 @@ body {
 
 .brand-text {
   font-family: var(--font-heading);
-  font-size: 0.95rem;
+  font-size: 1.05rem;
   font-weight: 900;
   letter-spacing: 0.5px;
   color: var(--text-on-brand);
@@ -130,10 +130,15 @@ body {
   border: 1px solid var(--primary);
   box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
   border-radius: var(--radius-md);
-  padding: 8px 10px;
-  line-height: 1.1;
+  padding: 7px 0;
+  width: 42px;
+  height: 42px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  min-width: 50px;
+  flex-shrink: 0;
 }
 .brand-text b {
   color: var(--primary);
