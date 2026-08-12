@@ -86,6 +86,9 @@
           <p id="page-subtitle">Visão geral do negócio e alertas operacionais</p>
         </div>
         <div class="topbar-actions">
+          <button class="btn btn-secondary" id="btn-toggle-theme" onclick="app.alternarModoClaroEscuro()" title="Alternar modo claro/escuro">
+            <i class="fa-solid fa-moon" id="icon-modo-escuro"></i><span class="btn-label-hide-mobile"> Modo Claro</span>
+          </button>
           <button class="btn btn-secondary" onclick="window.open('manual.html', '_blank')">
             <i class="fa-solid fa-book"></i> Manual PDF
           </button>
@@ -137,7 +140,7 @@
               <div class="metric-data">
                 <span class="metric-label">Alertas de Manutenção (75d)</span>
                 <h3 class="metric-value text-warning" id="dash-alertas-count">0</h3>
-                <span class="metric-sub text-warning"><i class="fa-solid fa-bell"></i> Requer contato via WhatsApp</span>
+                <span class="metric-sub text-warning"><i class="fa-solid fa-bell"></i> Requer contato via E-mail</span>
               </div>
             </div>
           </div>
@@ -149,7 +152,7 @@
                 <i class="fa-brands fa-whatsapp text-success fs-1-2"></i>
                 <div>
                   <h3>Central de Lembretes de Manutenção</h3>
-                  <p>Acompanhe os lembretes de manutenção preventiva e dispare o contato via WhatsApp quando chegar na hora.</p>
+                  <p>Acompanhe os lembretes de manutenção preventiva e envie o contato por e-mail quando chegar na hora.</p>
                 </div>
               </div>
               <button class="btn btn-sm btn-secondary" onclick="app.switchTab('recorrencia')">Ver Todos</button>
@@ -385,7 +388,12 @@
             <div class="card-header">
               <div>
                 <h3><i class="fa-solid fa-shield-halved text-primary"></i> Lembretes de Manutenção</h3>
-                <p>Acompanhamento preventivo: o lembrete é disparado cerca de <strong>30 dias</strong> após o serviço, com prazo limite de <strong>45 dias</strong>.</p>
+                <p>Acompanhamento preventivo: o lembrete é disparado cerca de <strong>30 dias</strong> após o serviço, com prazo limite de <strong>45 dias</strong>. Quando chega na hora, envie o contato por <strong>e-mail</strong>.</p>
+              </div>
+              <div class="table-actions">
+                <button class="btn btn-sm btn-email" onclick="app.dispararLembretesPendentes()">
+                  <i class="fa-solid fa-envelope"></i> Disparar Pendentes por E-mail
+                </button>
               </div>
             </div>
             <div class="card-body">
@@ -415,7 +423,7 @@
                       <th>Data Aplicação</th>
                       <th>Lembrete</th>
                       <th>Prazo Limite</th>
-                      <th>Ação WhatsApp</th>
+                      <th>Lembrete por E-mail</th>
                       <th>Ações</th>
                     </tr>
                   </thead>

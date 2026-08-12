@@ -129,13 +129,15 @@ const DEFAULT_DATA = {
       clienteId: 'cli-1',
       clienteNome: 'João Silva',
       clienteWhats: '5516997293434',
+      clienteEmail: 'joao.silva@email.com',
       veiculoInfo: 'Toyota Corolla (ABC-1D23)',
       servicoOriginal: 'Polimento Técnico com Vitrificação',
       cicloAtual: '1ª Manutenção de Vitrificação',
       dataAplicacao: '2026-07-15',
       dataGatilhoAlerta: '2026-08-14',
       dataLimite90d: '2026-08-29',
-      status: 'EM ANDAMENTO'
+      status: 'EM ANDAMENTO',
+      avisoEnviado: false
     }
   ],
   agendamentos: [
@@ -218,6 +220,35 @@ class EsteticaCRM {
     let nome = 'azul';
     try { nome = localStorage.getItem(THEME_KEY) || 'azul'; } catch (e) {}
     this.aplicarTema(nome);
+    // Restaura também a preferência de modo claro/escuro.
+    this.aplicarModoSalvo();
+  }
+
+  // Alterna entre modo escuro (padrão) e claro, trocando o fundo da interface.
+  alternarModoClaroEscuro() {
+    const claro = document.body.classList.toggle('light-mode');
+    try { localStorage.setItem('ESTETICA_CRM_LIGHT', claro ? '1' : '0'); } catch (e) {}
+    this.atualizarIconeModo(claro);
+  }
+
+  // Aplica a preferência de modo (claro/escuro) salva no dispositivo.
+  aplicarModoSalvo() {
+    let claro = false;
+    try { claro = localStorage.getItem('ESTETICA_CRM_LIGHT') === '1'; } catch (e) {}
+    if (claro) document.body.classList.add('light-mode');
+    this.atualizarIconeModo(claro);
+  }
+
+  // Atualiza o rótulo/ícone do botão de acordo com o modo ativo.
+  atualizarIconeModo(claro) {
+    const icon = document.getElementById('icon-modo-escuro');
+    const label = document.querySelector('#btn-toggle-theme .btn-label-hide-mobile');
+    if (icon) {
+      icon.className = claro ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    }
+    if (label) {
+      label.textContent = claro ? ' Modo Escuro' : ' Modo Claro';
+    }
   }
 
   init() {
@@ -730,14 +761,82 @@ class EsteticaCRM {
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
       // Janela de lembrete: alerta a partir de 30 dias, vencido após 45 dias.
+      let novoStatus;
       if (diffDays >= 45) {
-        rec.status = 'VENCIDO';
+        novoStatus = 'VENCIDO';
       } else if (diffDays >= 30) {
-        rec.status = 'ALERTA MANUTENÇÃO';
+        novoStatus = 'ALERTA MANUTENÇÃO';
       } else {
-        rec.status = 'EM ANDAMENTO';
+        novoStatus = 'EM ANDAMENTO';
+      }
+
+      // Transição para ALERTA/VENCIDO: dispara lembrete por e-mail (1 vez).
+      const entrouEmAviso = (novoStatus === 'ALERTA MANUTENÇÃO' || novoStatus === 'VENCIDO')
+        && rec.status !== novoStatus
+        && !rec.avisoEnviado;
+      rec.status = novoStatus;
+      if (entrouEmAviso) {
+        this.dispararLembreteEmail(rec);
       }
     });
+  }
+
+  // Monta o link mailto: com a mensagem de lembrete (disparo simplificado por e-mail).
+  // Não depende de backend: abre o cliente de e-mail do usuário já preenchido.
+  getRecurrenceEmailUrl(rec) {
+    const assunto = encodeURIComponent(`Lembrete de Manutenção — ${rec.clienteNome} (${rec.veiculoInfo})`);
+    const corpo = encodeURIComponent(
+      `Olá ${rec.clienteNome}!\n\n` +
+      `Tudo bem? Passando para lembrar que seu veículo ${rec.veiculoInfo} realizou a ${rec.servicoOriginal} na ${NOME_EMPRESA} e está na hora de fazer a sua ${rec.cicloAtual}!\n\n` +
+      `A manutenção preventiva é essencial para proteger o brilho e a camada de proteção da pintura.\n\n` +
+      `Podemos agendar o seu horário para esta semana?\n\n` +
+      `Atenciosamente,\n${NOME_EMPRESA}`
+    );
+    const destino = rec.clienteEmail ? rec.clienteEmail : '';
+    return `mailto:${destino}?subject=${assunto}&body=${corpo}`;
+  }
+
+  // Dispara (abre o cliente de e-mail) o lembrete de um lembrete específico.
+  dispararLembreteEmail(rec) {
+    if (!rec || !rec.clienteEmail) {
+      alert(`O lembrete de ${rec ? rec.clienteNome : 'cliente'} não possui e-mail cadastrado. Cadastre o e-mail do cliente para enviar o lembrete.`);
+      return;
+    }
+    // Abre o cliente de e-mail padrão (Outlook, Gmail, etc.) já preenchido.
+    window.location.href = this.getRecurrenceEmailUrl(rec);
+    // Marca como enviado para não disparar de novo ao recarregar (igual à Daderio).
+    rec.avisoEnviado = true;
+    this.saveData();
+  }
+
+  // Dispara em lote todos os lembretes pendentes por e-mail (botão manual).
+  dispararLembretesPendentes() {
+    const pendentes = this.data.recorrencias.filter(r =>
+      (r.status === 'ALERTA MANUTENÇÃO' || r.status === 'VENCIDO') && !r.avisoEnviado
+    );
+    if (pendentes.length === 0) {
+      alert('Nenhum lembrete pendente para disparar.');
+      return;
+    }
+    const comEmail = pendentes.filter(r => r.clienteEmail);
+    const semEmail = pendentes.filter(r => !r.clienteEmail);
+    if (comEmail.length === 0) {
+      alert('Nenhum dos lembretes pendentes possui e-mail cadastrado. Cadastre o e-mail dos clientes para enviar.');
+      return;
+    }
+    if (!confirm(`Disparar ${comEmail.length} lembrete(s) por e-mail?`)) return;
+    // Abre o primeiro e-mail; os demais ficam marcados como enviados para
+    // evitar abrir dezenas de janelas de e-mail de uma vez.
+    this.dispararLembreteEmail(comEmail[0]);
+    for (let i = 1; i < comEmail.length; i++) {
+      comEmail[i].avisoEnviado = true;
+    }
+    if (semEmail.length > 0) {
+      alert(`${comEmail.length} lembrete(s) enviado(s). ${semEmail.length} foi(ram) pulado(s) por não ter(em) e-mail cadastrado.`);
+    }
+    this.saveData();
+    this.renderRecorrencias();
+    this.renderDashboard();
   }
 
   getRecurrenceWhatsAppUrl(rec) {
@@ -877,9 +976,9 @@ class EsteticaCRM {
             </td>
             <td>${this.formatDate(rec.dataLimite90d)}</td>
             <td>
-              <a href="${this.getRecurrenceWhatsAppUrl(rec)}" target="_blank" class="btn btn-sm btn-whatsapp">
-                <i class="fa-brands fa-whatsapp"></i> Disparar Whats
-              </a>
+              <button class="btn btn-sm btn-email" onclick="app.dispararLembreteEmail(app.data.recorrencias.find(x=>x.id==='${rec.id}'))">
+                <i class="fa-solid fa-envelope"></i> Enviar E-mail
+              </button>
               <a href="${this.getGoogleCalendarUrl(rec)}" target="_blank" class="btn btn-sm btn-secondary" title="Salvar no Google Agenda">
                 <i class="fa-solid fa-calendar-plus text-primary"></i> Agenda
               </a>
@@ -1104,6 +1203,7 @@ class EsteticaCRM {
       clienteId: cliente.id,
       clienteNome: cliente.nome,
       clienteWhats: cliente.whatsapp,
+      clienteEmail: cliente.email || '',
       veiculoInfo: veiInfo,
       categoriaVeiculo: this.currentCategory,
       servicosIds: [...this.selectedServiceIds],
@@ -1284,6 +1384,7 @@ class EsteticaCRM {
         clienteId: orc.clienteId,
         clienteNome: orc.clienteNome,
         clienteWhats: orc.clienteWhats,
+        clienteEmail: orc.clienteEmail || '',
         veiculoInfo: orc.veiculoInfo,
         servicoOriginal: srv.nome,
         cicloAtual: '1ª Manutenção de Vitrificação',
@@ -1643,10 +1744,10 @@ class EsteticaCRM {
         <td data-label="Data Aplicação">${this.formatDate(r.dataAplicacao)}</td>
         <td data-label="Lembrete"><strong class="text-warning">${this.formatDate(r.dataGatilhoAlerta)}</strong></td>
         <td data-label="Prazo Limite"><strong class="text-danger">${this.formatDate(r.dataLimite90d)}</strong></td>
-        <td data-label="WhatsApp">
-          <a href="${this.getRecurrenceWhatsAppUrl(r)}" target="_blank" class="btn btn-sm btn-whatsapp">
-            <i class="fa-brands fa-whatsapp"></i> Disparar Whats
-          </a>
+        <td data-label="Lembrete por E-mail">
+          <button class="btn btn-sm btn-email" onclick="app.dispararLembreteEmail(app.data.recorrencias.find(x=>x.id==='${r.id}'))">
+            <i class="fa-solid fa-envelope"></i> Enviar E-mail
+          </button>
           <a href="${this.getGoogleCalendarUrl(r)}" target="_blank" class="btn btn-sm btn-secondary" title="Adicionar Lembrete no Google Agenda">
             <i class="fa-solid fa-calendar-plus text-primary"></i> Agenda
           </a>

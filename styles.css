@@ -8,26 +8,32 @@
   --bg-card: #161616;
   --bg-card-hover: #1f1f1f;
   --bg-sidebar: #090909;
+  --bg-inset: #0f0f0f;            /* fundos "entalhados" (inputs, listas) */
   --border-color: #262626;
   --border-color-light: #333333;
-  
+
   /* COR DE MARCA (altere aqui para personalizar por cliente) */
   --primary: #2563eb;
   --primary-hover: #1d4ed8;
   --primary-glow: rgba(37, 99, 235, 0.25);
-  
+
   --text-main: #f3f4f6;
   --text-muted: #9ca3af;
   --text-dark: #6b7280;
-  
+  --text-on-brand: #fff;          /* texto sobre a cor de marca / fundos escuros */
+  --brand-bg: #000;               /* fundo da "logo" no header/sidebar */
+
   --color-success: #10b981;
   --color-warning: #f59e0b;
   --color-danger: #ef4444;
   --color-info: #3b82f6;
-  
+
+  --email: #2563eb;               /* tom do botão de e-mail (azul institucional) */
+  --email-hover: #1d4ed8;
+
   --font-heading: 'Montserrat', sans-serif;
   --font-body: 'Inter', sans-serif;
-  
+
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
@@ -35,6 +41,38 @@
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.6);
   --shadow-primary: 0 4px 20px var(--primary-glow);
+
+  /* Brilho dos overlays (topbar, hover de itens, linhas de tabela) */
+  --overlay: rgba(255, 255, 255, 0.05);
+  --overlay-strong: rgba(255, 255, 255, 0.02);
+  --overlay-hover: rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   MODO CLARO — troca o fundo escuro por um fundo claro/neutro.
+   Ativado pela classe .light-mode no <body> (toggle no topbar).
+   ============================================================ */
+body.light-mode {
+  --bg-main: #f4f6f8;
+  --bg-card: #ffffff;
+  --bg-card-hover: #eef1f5;
+  --bg-sidebar: #ffffff;
+  --bg-inset: #eef1f5;
+  --border-color: #e2e8f0;
+  --border-color-light: #cbd5e1;
+
+  --text-main: #0f172a;
+  --text-muted: #64748b;
+  --text-dark: #94a3b8;
+  --text-on-brand: #ffffff;
+  --brand-bg: #0f172a;
+
+  --shadow-sm: 0 2px 8px rgba(15, 23, 42, 0.08);
+  --shadow-md: 0 4px 20px rgba(15, 23, 42, 0.12);
+
+  --overlay: rgba(15, 23, 42, 0.04);
+  --overlay-strong: rgba(15, 23, 42, 0.02);
+  --overlay-hover: rgba(15, 23, 42, 0.06);
 }
 
 /* Reset & Base */
@@ -87,8 +125,8 @@ body {
   font-size: 0.95rem;
   font-weight: 900;
   letter-spacing: 0.5px;
-  color: #fff;
-  background-color: #000;
+  color: var(--text-on-brand);
+  background-color: var(--brand-bg);
   border: 1px solid var(--primary);
   box-shadow: 0 0 15px rgba(37, 99, 235, 0.4);
   border-radius: var(--radius-md);
@@ -106,7 +144,7 @@ body {
   font-size: 1.15rem;
   font-weight: 900;
   letter-spacing: 1px;
-  color: #fff;
+  color: var(--text-on-brand);
   line-height: 1;
 }
 
@@ -147,13 +185,13 @@ body {
 }
 
 .nav-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--overlay);
   color: var(--text-main);
 }
 
 .nav-item.active {
   background-color: var(--primary);
-  color: #fff;
+  color: var(--text-on-brand);
   font-weight: 600;
   box-shadow: var(--shadow-primary);
 }
@@ -223,7 +261,7 @@ body {
 
 .topbar {
   padding: 24px 32px;
-  background-color: rgba(13, 13, 13, 0.8);
+  background-color: var(--bg-card);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-color);
   display: flex;
@@ -238,7 +276,7 @@ body {
   font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 .topbar-title p {
@@ -290,7 +328,7 @@ body {
 
 .btn-primary {
   background-color: var(--primary);
-  color: #fff;
+  color: var(--text-on-brand);
   box-shadow: var(--shadow-primary);
 }
 
@@ -318,7 +356,7 @@ body {
 
 .btn-danger:hover {
   background-color: var(--color-danger);
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 .btn-sm {
@@ -333,12 +371,24 @@ body {
 
 .btn-whatsapp {
   background-color: #25D366;
-  color: #fff;
+  color: var(--text-on-brand);
   font-weight: 700;
 }
 
 .btn-whatsapp:hover {
   background-color: #128C7E;
+  color: var(--text-on-brand);
+}
+
+.btn-email {
+  background-color: var(--email);
+  color: #fff;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.btn-email:hover {
+  background-color: var(--email-hover);
   color: #fff;
 }
 
@@ -358,14 +408,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--overlay-strong);
 }
 
 .card-header h3 {
   font-family: var(--font-heading);
   font-size: 1.1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-on-brand);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -414,7 +464,7 @@ body {
   width: 50px;
   height: 50px;
   border-radius: var(--radius-md);
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: var(--overlay);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -447,7 +497,7 @@ body {
   font-family: var(--font-heading);
   font-size: 1.4rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-on-brand);
   margin: 2px 0;
 }
 
@@ -472,7 +522,7 @@ body {
 .form-control {
   width: 100%;
   padding: 12px 14px;
-  background-color: #0f0f0f;
+  background-color: var(--bg-inset);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   color: var(--text-main);
@@ -508,7 +558,7 @@ body {
 
 .cat-btn {
   padding: 12px;
-  background-color: #0f0f0f;
+  background-color: var(--bg-inset);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   text-align: center;
@@ -535,7 +585,7 @@ body {
 .cat-btn.active {
   background-color: rgba(37, 99, 235, 0.15);
   border-color: var(--primary);
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 /* Services Checklist Component */
@@ -549,7 +599,7 @@ body {
 }
 
 .service-chk-item {
-  background-color: #0f0f0f;
+  background-color: var(--bg-inset);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 12px 16px;
@@ -578,7 +628,7 @@ body {
 .service-chk-info h5 {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 .service-chk-info p {
@@ -594,7 +644,7 @@ body {
 
 /* Summary Box */
 .orc-summary-box {
-  background-color: #0f0f0f;
+  background-color: var(--bg-inset);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 16px 20px;
@@ -632,7 +682,7 @@ body {
 
 .table th {
   padding: 12px 16px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--overlay-strong);
   color: var(--text-muted);
   font-weight: 600;
   border-bottom: 1px solid var(--border-color);
@@ -649,7 +699,7 @@ body {
 }
 
 .table tbody tr:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--overlay-strong);
 }
 
 /* Badges & Pills */
@@ -715,11 +765,11 @@ body {
   font-family: var(--font-heading);
   font-size: 1rem;
   font-weight: 700;
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 .checklist-box {
-  background-color: #0f0f0f;
+  background-color: var(--bg-inset);
   border-radius: var(--radius-sm);
   padding: 12px;
   margin: 12px 0;
@@ -752,7 +802,7 @@ body {
 }
 
 .box-column {
-  background-color: #0f0f0f;
+  background-color: var(--bg-inset);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -760,7 +810,7 @@ body {
 
 .box-header {
   padding: 14px 16px;
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--overlay-strong);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -795,7 +845,7 @@ body {
 .agenda-slot-item .client {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 .agenda-slot-item .service {
@@ -811,7 +861,7 @@ body {
 }
 
 .stat-box {
-  background-color: #0f0f0f;
+  background-color: var(--bg-inset);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 16px;
@@ -828,7 +878,7 @@ body {
   font-family: var(--font-heading);
   font-size: 1.6rem;
   font-weight: 800;
-  color: #fff;
+  color: var(--text-on-brand);
   margin-top: 4px;
 }
 
@@ -907,7 +957,7 @@ body.modal-open {
 .modal-header h3 {
   font-family: var(--font-heading);
   font-size: 1.1rem;
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 .modal-close {
@@ -940,7 +990,7 @@ body.modal-open {
 }
 
 .agenda-item-card {
-  background-color: #0f0f0f;
+  background-color: var(--bg-inset);
   border: 1px solid var(--border-color);
   border-left: 4px solid var(--primary);
   border-radius: var(--radius-md);
@@ -968,7 +1018,7 @@ body.modal-open {
 
 .agenda-item-info h4 {
   font-size: 1rem;
-  color: #fff;
+  color: var(--text-on-brand);
   margin-bottom: 2px;
 }
 
@@ -993,7 +1043,7 @@ body.modal-open {
 }
 
 .agenda-calendar-panel {
-  background-color: #0f0f0f;
+  background-color: var(--bg-inset);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   padding: 16px;
@@ -1013,7 +1063,7 @@ body.modal-open {
   font-family: var(--font-heading);
   font-weight: 700;
   font-size: 0.95rem;
-  color: #fff;
+  color: var(--text-on-brand);
   text-align: center;
   flex: 1;
 }
@@ -1058,7 +1108,7 @@ body.modal-open {
 }
 
 .cal-day:hover:not(:disabled) {
-  background-color: rgba(255, 255, 255, 0.08);
+  background-color: var(--overlay-hover);
   border-color: var(--border-color-light);
 }
 
@@ -1089,12 +1139,12 @@ body.modal-open {
 
 .cal-day.is-selected {
   background-color: var(--primary);
-  color: #fff;
+  color: var(--text-on-brand);
   font-weight: 700;
 }
 
 .cal-day.is-selected.has-events {
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 .cal-day.is-selected.has-events::after {
@@ -1137,7 +1187,7 @@ body.modal-open {
   gap: 12px;
   margin-bottom: 16px;
   padding: 12px;
-  background: #0f0f0f;
+  background: var(--bg-inset);
   border-radius: var(--radius-md);
   border: 1px solid var(--border-color);
 }
@@ -1160,7 +1210,7 @@ body.modal-open {
 .agenda-period-header h4 {
   font-family: var(--font-heading);
   font-size: 1rem;
-  color: #fff;
+  color: var(--text-on-brand);
 }
 
 .agenda-empty-state {
@@ -1237,7 +1287,7 @@ textarea.form-control {
 
 .btn-success {
   background-color: var(--color-success);
-  color: #fff;
+  color: var(--text-on-brand);
   border: none;
 }
 
@@ -1408,7 +1458,7 @@ input, textarea, select, .form-control, code, .pdf-document {
 }
 .theme-swatch:hover { transform: scale(1.08); }
 .theme-swatch.active {
-  border-color: #fff;
+  border-color: var(--text-main);
   box-shadow: 0 0 0 3px var(--sw);
 }
 
@@ -1541,7 +1591,7 @@ input, textarea, select, .form-control, code, .pdf-document {
   }
   #orcamentos-list-tbody tr.orc-row {
     display: block;
-    background: #0f0f0f;
+    background: var(--bg-inset);
     border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 12px;
@@ -1595,7 +1645,7 @@ input, textarea, select, .form-control, code, .pdf-document {
   #financeiro-tbody tr,
   #dash-alertas-table tr {
     display: block;
-    background: #0f0f0f;
+    background: var(--bg-inset);
     border: 1px solid var(--border-color);
     border-radius: 10px;
     padding: 12px;
