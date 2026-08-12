@@ -279,68 +279,111 @@
       </div>
     </div>
 
-    <!-- PASSO 1 -->
+    <!-- COMO USAR -->
     <div class="step-card">
-      <div class="step-number"><i class="fa-solid fa-chart-line"></i> PASSO 1</div>
-      <h3>Dashboard Executivo</h3>
-      <p>O Dashboard apresenta métricas em tempo real sobre os serviços <strong>aprovados</strong> e executados:</p>
+      <div class="step-number"><i class="fa-solid fa-rocket"></i> COMEÇO RÁPIDO</div>
+      <p>O AutoPulse roda 100% no navegador (celular ou computador), sem servidor. Seus dados ficam salvos no próprio dispositivo. Siga a ordem abaixo para usar sem erro:</p>
       <ul class="step-list">
-        <li><i class="fa-solid fa-check"></i> <strong>Faturamento do Mês:</strong> Soma dos orçamentos aprovados no período.</li>
-        <li><i class="fa-solid fa-check"></i> <strong>Veículos Atendidos:</strong> Total de atendimentos concluídos com sucesso.</li>
-        <li><i class="fa-solid fa-check"></i> <strong>Alertas de Manutenção:</strong> Exibe o número de clientes que necessitam de contato via WhatsApp para revisão da proteção da pintura.</li>
+        <li><i class="fa-solid fa-user-plus"></i> <strong>1. Cadastre o cliente</strong> (e o veículo dele) em <em>Clientes &amp; Veículos</em>.</li>
+        <li><i class="fa-solid fa-file-invoice-dollar"></i> <strong>2. Monte o orçamento</strong> em <em>Orçamentos</em> e envie o PDF ao cliente.</li>
+        <li><i class="fa-solid fa-check"></i> <strong>3. Aprovar</strong> quando o cliente confirmar — isso registra o faturamento e cria o lembrete de manutenção.</li>
+        <li><i class="fa-solid fa-calendar-plus"></i> <strong>4. Agendar</strong> o dia/hora do serviço (vai para a Agenda).</li>
+        <li><i class="fa-solid fa-flag-checkered"></i> <strong>5. Concluir</strong> após executar o serviço.</li>
       </ul>
     </div>
 
-    <!-- PASSO 2 -->
+    <!-- DASHBOARD -->
     <div class="step-card">
-      <div class="step-number"><i class="fa-solid fa-file-invoice-dollar"></i> PASSO 2</div>
-      <h3>Orçamentos & Fluxo de Aprovação</h3>
-      <p>Crie orçamentos limpos em PDF e aprove-os somente após confirmação do cliente:</p>
+      <div class="step-number"><i class="fa-solid fa-chart-line"></i> DASHBOARD</div>
+      <p>Visão geral que se atualiza sozinha conforme você usa o sistema:</p>
       <ul class="step-list">
-        <li><i class="fa-solid fa-circle-1"></i> <strong>Montagem do Orçamento:</strong> Selecione Cliente, Veículo e Categoria (<em>Hatch, Sedan, SUV, Caminhonete</em>).</li>
-        <li><i class="fa-solid fa-circle-2"></i> <strong>Status PENDENTE:</strong> Ao salvar, o orçamento inicia como <strong>PENDENTE</strong>. O lembrete de vitrificação NÃO é gerado de imediato.</li>
-        <li><i class="fa-solid fa-circle-3"></i> <strong>Envio em PDF:</strong> Envie o orçamento em lista (bullet list) via WhatsApp para avaliação do cliente.</li>
-        <li><i class="fa-solid fa-circle-4"></i> <strong>Aprovar Serviço:</strong> Quando o cliente aprovar, clique no botão verde <strong>"Aprovar"</strong>. Nesse momento o sistema credita o valor no Financeiro e gera o lembrete automático de manutenção (cerca de 30 dias após o serviço).</li>
+        <li><i class="fa-solid fa-sack-dollar"></i> <strong>Faturamento do Mês:</strong> soma de todos os orçamentos aprovados.</li>
+        <li><i class="fa-solid fa-car"></i> <strong>Veículos Atendidos:</strong> quantos orçamentos estão Aprovados ou Concluídos.</li>
+        <li><i class="fa-solid fa-ticket"></i> <strong>Ticket Médio:</strong> faturamento dividido pelos atendimentos.</li>
+        <li><i class="fa-solid fa-bell"></i> <strong>Alertas de Manutenção (75d):</strong> clientes na janela de lembrete (veja abaixo).</li>
+        <li><i class="fa-solid fa-calendar-day"></i> <strong>Agendamentos de Hoje</strong> e <strong>Orçamentos Recentes</strong> aparecem nas áreas abaixo.</li>
       </ul>
     </div>
 
-    <!-- PASSO 3 -->
+    <!-- ORCAMENTOS -->
     <div class="step-card">
-      <div class="step-number"><i class="fa-solid fa-shield-halved"></i> PASSO 3</div>
-      <h3>Motor de Lembretes (Edição, Exclusão & Google Agenda)</h3>
-      <p>Gerencie preventivamente os avisos de manutenção:</p>
+      <div class="step-number"><i class="fa-solid fa-file-invoice-dollar"></i> ORÇAMENTOS</div>
+      <p>Como criar e movimentar um orçamento:</p>
       <ul class="step-list">
-        <li><i class="fa-solid fa-bell"></i> <strong>Aviso de Manutenção:</strong> O alerta é disparado cerca de 30 dias após o serviço, com prazo limite de 45 dias.</li>
-        <li><i class="fa-brands fa-whatsapp"></i> <strong>WhatsApp & Google Agenda:</strong> Dispare mensagens pré-formatadas no WhatsApp ou adicione eventos no calendário do smartphone em 1 clique.</li>
-        <li><i class="fa-solid fa-pen-to-square"></i> <strong>Editar e Excluir Lembretes:</strong> Utilize os botões de **Editar** para alterar datas ou **Excluir** para remover qualquer lembrete manualmente.</li>
-        <li><i class="fa-solid fa-rotate"></i> <strong>Renovação de Ciclos:</strong> Clique em **"Concluir Manutenção"** ao realizar o serviço para agendar automaticamente o próximo ciclo (1ª → 2ª → 3ª Manutenção).</li>
+        <li><i class="fa-solid fa-circle-1"></i> <strong>Montar:</strong> escolha <strong>Cliente</strong>, <strong>Veículo</strong> e <strong>Categoria</strong> (Hatch, Sedan, SUV, Caminhonete). Os preços mudam conforme a categoria.</li>
+        <li><i class="fa-solid fa-circle-2"></i> <strong>Selecionar serviços:</strong> marque os da biblioteca e adicione <strong>Itens Extras</strong> se quiser. O total se calcula sozinho.</li>
+        <li><i class="fa-solid fa-circle-3"></i> <strong>Salvar:</strong> o orçamento inicia como <span class="badge badge-pending">Pendente</span>. Um PDF é gerado para você enviar.</li>
+        <li><i class="fa-solid fa-circle-4"></i> <strong>Aprovar:</strong> ao clicar em <em>Aprovar</em>, o valor entra no Financeiro e o lembrete de manutenção é criado.</li>
+        <li><i class="fa-solid fa-circle-5"></i> <strong>Agendar:</strong> depois de aprovado, escolha data/hora e o serviço vai para a Agenda.</li>
+        <li><i class="fa-solid fa-circle-6"></i> <strong>Concluir:</strong> use após executar o serviço (muda para <span class="badge badge-concluded">Serviço Concluído</span>).</li>
+        <li><i class="fa-solid fa-file-pdf"></i> <strong>PDF / Enviar:</strong> gere o PDF ou abra o link de WhatsApp para enviar ao cliente.</li>
       </ul>
     </div>
 
-    <!-- PASSO 4 -->
+    <!-- CLIENTES -->
     <div class="step-card">
-      <div class="step-number"><i class="fa-solid fa-address-book"></i> PASSO 4</div>
-      <h3>Cadastro de Clientes & Múltiplos Veículos</h3>
-      <p>Cadastre múltiplos veículos por cliente e edite dados quando precisar:</p>
+      <div class="step-number"><i class="fa-solid fa-address-book"></i> CLIENTES &amp; VEÍCULOS</div>
       <ul class="step-list">
-        <li><i class="fa-solid fa-check"></i> <strong>Múltiplos Veículos por Cliente:</strong> Um único cliente pode possuir vários carros cadastrados (ex: João Silva → Corolla, Hilux, Civic). Clique em <strong>"+ Adicionar Veículo"</strong> na tela de Detalhes.</li>
-        <li><i class="fa-solid fa-pen-to-square"></i> <strong>Edição Completa:</strong> Edite Nome, WhatsApp, E-mail, Endereço ou dados de qualquer veículo existente sem ter que apagar o cadastro.</li>
+        <li><i class="fa-solid fa-user-plus"></i> <strong>Novo cliente:</strong> cadastre Nome, WhatsApp, <strong>E-mail</strong>, Endereço e o 1º veículo de uma vez.</li>
+        <li><i class="fa-solid fa-car"></i> <strong>Múltiplos veículos:</strong> um cliente pode ter vários carros (ex: Corolla e Hilux).</li>
+        <li><i class="fa-solid fa-pen-to-square"></i> <strong>Editar:</strong> altere qualquer dado ou veículo sem apagar o cadastro.</li>
+        <li><i class="fa-solid fa-envelope"></i> <strong>E-mail é importante:</strong> sem ele, o lembrete de manutenção não consegue ser enviado por e-mail.</li>
       </ul>
     </div>
 
-    <!-- PASSO 5 -->
+    <!-- LEMBRETES 75d -->
     <div class="step-card">
-      <div class="step-number"><i class="fa-solid fa-calendar-days"></i> PASSO 5</div>
-      <h3>Agenda Expandida & Otimização Mobile</h3>
+      <div class="step-number"><i class="fa-solid fa-shield-halved"></i> LEMBRETES DE MANUTENÇÃO (75 DIAS)</div>
+      <p>O sistema lembra o cliente de voltar para a manutenção preventiva da pintura:</p>
       <ul class="step-list">
-        <li><i class="fa-solid fa-calendar-week"></i> <strong>Navegação da Agenda:</strong> Alterne facilmente entre a visualização <strong>Por Data</strong>, <strong>Próximos 7 Dias (Semana)</strong> e <strong>Todos os Agendamentos</strong>.</li>
-        <li><i class="fa-solid fa-mobile-screen-button"></i> <strong>UX App Nativo em Smartphones:</strong> O CRM foi travado contra seleções de texto e ampliações acidentais via toque de pinça, oferecendo navegação fluida em celulares.</li>
+        <li><i class="fa-solid fa-gear"></i> <strong>Quando é criado:</strong> ao <em>Aprovar</em> um orçamento de <strong>Polimento</strong> (ou serviço marcado para gerar recorrência).</li>
+        <li><i class="fa-solid fa-clock"></i> <strong>Janela:</strong> o alerta aparece aos <strong>75 dias</strong> da aplicação e vence aos <strong>90 dias</strong>.</li>
+        <li><i class="fa-solid fa-envelope"></i> <strong>Enviar por E-mail:</strong> o botão abre o seu e-mail já escrito (para o cliente). Precisa do e-mail cadastrado.</li>
+        <li><i class="fa-solid fa-envelopes-bulk"></i> <strong>Disparar Pendentes:</strong> envia em lote — abre o 1º e-mail e marca os demais como enviados (dispare um a um se preferir reenviar).</li>
+        <li><i class="fa-solid fa-calendar-plus"></i> <strong>Google Agenda:</strong> adiciona o lembrete na sua agenda em 1 clique.</li>
+        <li><i class="fa-solid fa-rotate"></i> <strong>Concluir Manutenção:</strong> ao fazer o serviço, gera o próximo ciclo (1ª → 2ª → 3ª → 4ª) automaticamente.</li>
+        <li><i class="fa-solid fa-pen-to-square"></i> <strong>Editar / Excluir:</strong> ajuste datas ou remova lembretes pela lista.</li>
+      </ul>
+      <div class="highlight-box">
+        <strong>Atenção:</strong> lembretes só são gerados para serviços de <em>Polimento</em> (ou marcados para recorrência). Aprovar lavagem simples não gera lembrete.
+      </div>
+    </div>
+
+    <!-- AGENDA -->
+    <div class="step-card">
+      <div class="step-number"><i class="fa-solid fa-calendar-days"></i> AGENDA</div>
+      <ul class="step-list">
+        <li><i class="fa-solid fa-calendar-week"></i> <strong>Visualizações:</strong> alterne entre <em>Por Data</em>, <em>Próximos 7 Dias</em> e <em>Todos os Agendamentos</em>.</li>
+        <li><i class="fa-solid fa-plus"></i> <strong>Novo agendamento:</strong> crie direto na agenda ou a partir de um orçamento aprovado.</li>
+        <li><i class="fa-solid fa-mobile-screen-button"></i> <strong>No celular:</strong> o sistema trava zoom e seleção acidental de texto para parecer um app.</li>
+      </ul>
+    </div>
+
+    <!-- FINANCEIRO -->
+    <div class="step-card">
+      <div class="step-number"><i class="fa-solid fa-sack-dollar"></i> FINANCEIRO</div>
+      <ul class="step-list">
+        <li><i class="fa-solid fa-arrow-up"></i> <strong>Receita:</strong> entra sozinha ao aprovar orçamento.</li>
+        <li><i class="fa-solid fa-plus"></i> <strong>Lançar à mão:</strong> adicione despesas ou receitas extras (ex: produtos).</li>
+        <li><i class="fa-solid fa-trash"></i> <strong>Excluir:</strong> remova lançamentos errados.</li>
+      </ul>
+    </div>
+
+    <!-- BACKUP / TEMA -->
+    <div class="step-card">
+      <div class="step-number"><i class="fa-solid fa-gear"></i> BACKUP, TEMA E MODO CLARO/ESCURO</div>
+      <ul class="step-list">
+        <li><i class="fa-solid fa-download"></i> <strong>Exportar Backup:</strong> baixa um arquivo JSON com tudo (clientes, orçamentos, etc.).</li>
+        <li><i class="fa-solid fa-upload"></i> <strong>Importar Backup:</strong> restaura um JSON — <strong>cuidado: substitui todos os dados atuais</strong>.</li>
+        <li><i class="fa-solid fa-palette"></i> <strong>Cor de marca:</strong> escolha Azul ou Grafite em Configurações (salva automaticamente).</li>
+        <li><i class="fa-solid fa-moon"></i> <strong>Modo Claro/Escuro:</strong> botão no topo da tela (<em>Modo Claro</em> / <em>Modo Escuro</em>). A escolha fica salva.</li>
+        <li><i class="fa-solid fa-rotate"></i> <strong>Restaurar demo:</strong> volta aos dados de exemplo se quiser recomeçar.</li>
       </ul>
     </div>
 
     <div class="manual-footer">
-      <p>AutoPulse — Gestão Automotiva — CNPJ: 00.000.000/0001-00 | (00) 00000-0000 | contato@suaestetica.com.br</p>
-      <small>Criado por Freze</small>
+      <p>AutoPulse — Gestão Automotiva — Criado por Freze</p>
+      <small>Sistema 100% no navegador. Seus dados ficam no seu dispositivo.</small>
     </div>
 
   </div>

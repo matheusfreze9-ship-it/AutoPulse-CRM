@@ -3,7 +3,7 @@
  * Single Page Application Logic, Storage & Recurrence Engine (Manutenção Preventiva)
  */
 
-const NOME_EMPRESA = 'Sua Estética Automotiva';
+const NOME_EMPRESA = 'AutoPulse';
 
 // Cores de marca disponíveis no seletor de tema (Configurações).
 const THEME_KEY = 'ESTETICA_CRM_THEME';
@@ -760,11 +760,11 @@ class EsteticaCRM {
       const diffTime = Math.abs(hoje - appDate);
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-      // Janela de lembrete: alerta a partir de 30 dias, vencido após 45 dias.
+      // Janela de lembrete: alerta a partir de 75 dias, vencido após 90 dias.
       let novoStatus;
-      if (diffDays >= 45) {
+      if (diffDays >= 90) {
         novoStatus = 'VENCIDO';
-      } else if (diffDays >= 30) {
+      } else if (diffDays >= 75) {
         novoStatus = 'ALERTA MANUTENÇÃO';
       } else {
         novoStatus = 'EM ANDAMENTO';
@@ -824,7 +824,7 @@ class EsteticaCRM {
       alert('Nenhum dos lembretes pendentes possui e-mail cadastrado. Cadastre o e-mail dos clientes para enviar.');
       return;
     }
-    if (!confirm(`Disparar ${comEmail.length} lembrete(s) por e-mail?`)) return;
+    if (!confirm(`Disparar ${comEmail.length} lembrete(s) por e-mail?\n\nO sistema abre o 1º e-mail agora. Os demais (${comEmail.length - 1}) serão marcados como enviados para não abrir várias janelas de uma vez — se preferir, dispare um a um na lista de lembretes.`)) return;
     // Abre o primeiro e-mail; os demais ficam marcados como enviados para
     // evitar abrir dezenas de janelas de e-mail de uma vez.
     this.dispararLembreteEmail(comEmail[0]);
@@ -832,7 +832,9 @@ class EsteticaCRM {
       comEmail[i].avisoEnviado = true;
     }
     if (semEmail.length > 0) {
-      alert(`${comEmail.length} lembrete(s) enviado(s). ${semEmail.length} foi(ram) pulado(s) por não ter(em) e-mail cadastrado.`);
+      alert(`1º e-mail aberto. ${comEmail.length - 1} lembrete(s) marcado(s) como enviado(s).\n${semEmail.length} foi(ram) pulado(s) por não ter(em) e-mail cadastrado.`);
+    } else {
+      alert(`1º e-mail aberto. ${comEmail.length - 1} lembrete(s) marcado(s) como enviado(s) (dispare um a um se quiser reenviar).`);
     }
     this.saveData();
     this.renderRecorrencias();
@@ -913,9 +915,9 @@ class EsteticaCRM {
 
     const dataApp = new Date(dataConclusao);
     const dataAlerta = new Date(dataApp);
-    dataAlerta.setDate(dataAlerta.getDate() + 30); // próximo lembrete em 30 dias
+    dataAlerta.setDate(dataAlerta.getDate() + 75); // próximo lembrete em 75 dias
     const dataLimite = new Date(dataApp);
-    dataLimite.setDate(dataLimite.getDate() + 45); // prazo limite em 45 dias
+    dataLimite.setDate(dataLimite.getDate() + 90); // prazo limite em 90 dias
 
     const novoCiclo = {
       id: 'rec-' + Date.now(),
@@ -1375,9 +1377,9 @@ class EsteticaCRM {
 
       const dataApp = new Date();
       const dataAlerta = new Date(dataApp);
-      dataAlerta.setDate(dataAlerta.getDate() + 30); // disparo do lembrete (30 dias)
+      dataAlerta.setDate(dataAlerta.getDate() + 75); // disparo do lembrete (75 dias)
       const dataLimite = new Date(dataApp);
-      dataLimite.setDate(dataLimite.getDate() + 45); // prazo limite (45 dias)
+      dataLimite.setDate(dataLimite.getDate() + 90); // prazo limite (90 dias)
 
       this.data.recorrencias.push({
         id: 'rec-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
