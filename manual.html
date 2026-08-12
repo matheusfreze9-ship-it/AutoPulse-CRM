@@ -168,34 +168,6 @@
       margin-top: 4px;
     }
 
-    .company-details-card {
-      background-color: #161616;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 28px;
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-    }
-
-    .company-detail-item {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .company-detail-item span {
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .company-detail-item strong {
-      font-size: 0.95rem;
-      color: #fff;
-    }
-
     .highlight-box {
       background-color: rgba(245, 158, 11, 0.1);
       border: 1px solid rgba(245, 158, 11, 0.3);
@@ -225,14 +197,11 @@
       .step-card h3 { color: #2563eb; }
       .step-card p, .step-list li { color: #333; }
       .brand-title h1 { color: #2563eb; }
-      .company-details-card { background-color: #f8f8f8; border-color: #ddd; }
-      .company-detail-item strong { color: #111; }
       .highlight-box { background-color: #fff8e6; border-color: #ffe0b2; color: #b78103; }
       .highlight-box strong { color: #111; }
     }
 
     @media (max-width: 600px) {
-      .company-details-card { grid-template-columns: 1fr; }
       .manual-header { flex-direction: column; align-items: flex-start; gap: 16px; }
       .header-badge { text-align: left; }
     }
@@ -260,22 +229,6 @@
       <div class="header-badge">
         <strong>GUIA OPERACIONAL DO CRM</strong><br>
         <small>Manual Oficial de Utilização</small>
-      </div>
-    </div>
-
-    <!-- CARTOES DE INFORMACAO DA EMPRESA -->
-    <div class="company-details-card">
-      <div class="company-detail-item">
-        <span>CNPJ da Empresa</span>
-        <strong>46.404.305/0001-60</strong>
-      </div>
-      <div class="company-detail-item">
-        <span>Telefone / WhatsApp</span>
-        <strong>(16) 99729-3434</strong>
-      </div>
-      <div class="company-detail-item">
-        <span>E-mail de Contato</span>
-        <strong>contato@suaestetica.com.br</strong>
       </div>
     </div>
 
