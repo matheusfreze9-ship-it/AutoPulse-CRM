@@ -794,6 +794,8 @@ class EsteticaCRM {
 
   // Monta o link mailto: com a mensagem de lembrete (disparo simplificado por e-mail).
   // Não depende de backend: abre o cliente de e-mail do usuário já preenchido.
+  // Monta a URL de compose do Gmail com destinatário e mensagem prontos.
+  // Abre direto no navegador/Gmail (evita o seletor de aplicativo do SO do mailto:).
   getRecurrenceEmailUrl(rec) {
     const assunto = encodeURIComponent(`Lembrete de Manutenção — ${rec.clienteNome} (${rec.veiculoInfo})`);
     const corpo = encodeURIComponent(
@@ -804,7 +806,7 @@ class EsteticaCRM {
       `Atenciosamente,\n${NOME_EMPRESA}`
     );
     const destino = this.getEmailAtualCliente(rec);
-    return `mailto:${destino}?subject=${assunto}&body=${corpo}`;
+    return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(destino)}&su=${assunto}&body=${corpo}`;
   }
 
   // Dispara (abre o cliente de e-mail) o lembrete de um lembrete específico.
@@ -816,8 +818,11 @@ class EsteticaCRM {
     }
     // Atualiza a cópia do lembrete com o e-mail atual (mantém consistência p/ disparo em lote).
     if (rec) rec.clienteEmail = email;
-    // Abre o cliente de e-mail padrão (Outlook, Gmail, etc.) já preenchido.
-    window.location.href = this.getRecurrenceEmailUrl(rec);
+    // Abre o Gmail (compose) em NOVA ABA, com destinatário e mensagem prontos.
+    // Assim o AutoPulse não fecha e não aparece o seletor de aplicativo do SO.
+    const url = this.getRecurrenceEmailUrl(rec);
+    const novaAba = window.open(url, '_blank');
+    if (!novaAba) window.location.href = url; // fallback se o popup for bloqueado
     // Marca como enviado para não disparar de novo ao recarregar (igual à Daderio).
     rec.avisoEnviado = true;
     this.saveData();
