@@ -781,6 +781,17 @@ class EsteticaCRM {
     });
   }
 
+  // Retorna o e-mail mais atual do cliente do lembrete.
+  // Busca no cadastro do cliente (via clienteId) e usa fallback para a cópia do lembrete,
+  // evitando e-mail "stale" quando o cliente teve o e-mail cadastrado depois.
+  getEmailAtualCliente(rec) {
+    if (rec && rec.clienteId) {
+      const cli = this.data.clientes.find(c => c.id === rec.clienteId);
+      if (cli && cli.email) return cli.email;
+    }
+    return (rec && rec.clienteEmail) || '';
+  }
+
   // Monta o link mailto: com a mensagem de lembrete (disparo simplificado por e-mail).
   // Não depende de backend: abre o cliente de e-mail do usuário já preenchido.
   getRecurrenceEmailUrl(rec) {
@@ -792,16 +803,19 @@ class EsteticaCRM {
       `Podemos agendar o seu horário para esta semana?\n\n` +
       `Atenciosamente,\n${NOME_EMPRESA}`
     );
-    const destino = rec.clienteEmail ? rec.clienteEmail : '';
+    const destino = this.getEmailAtualCliente(rec);
     return `mailto:${destino}?subject=${assunto}&body=${corpo}`;
   }
 
   // Dispara (abre o cliente de e-mail) o lembrete de um lembrete específico.
   dispararLembreteEmail(rec) {
-    if (!rec || !rec.clienteEmail) {
-      alert(`O lembrete de ${rec ? rec.clienteNome : 'cliente'} não possui e-mail cadastrado. Cadastre o e-mail do cliente para enviar o lembrete.`);
+    const email = this.getEmailAtualCliente(rec);
+    if (!rec || !email) {
+      alert(`O cliente ${rec ? rec.clienteNome : ''} não possui e-mail cadastrado. Cadastre o e-mail do cliente para enviar o lembrete.`);
       return;
     }
+    // Atualiza a cópia do lembrete com o e-mail atual (mantém consistência p/ disparo em lote).
+    if (rec) rec.clienteEmail = email;
     // Abre o cliente de e-mail padrão (Outlook, Gmail, etc.) já preenchido.
     window.location.href = this.getRecurrenceEmailUrl(rec);
     // Marca como enviado para não disparar de novo ao recarregar (igual à Daderio).
@@ -818,8 +832,8 @@ class EsteticaCRM {
       alert('Nenhum lembrete pendente para disparar.');
       return;
     }
-    const comEmail = pendentes.filter(r => r.clienteEmail);
-    const semEmail = pendentes.filter(r => !r.clienteEmail);
+    const comEmail = pendentes.filter(r => this.getEmailAtualCliente(r));
+    const semEmail = pendentes.filter(r => !this.getEmailAtualCliente(r));
     if (comEmail.length === 0) {
       alert('Nenhum dos lembretes pendentes possui e-mail cadastrado. Cadastre o e-mail dos clientes para enviar.');
       return;
