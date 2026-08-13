@@ -5,6 +5,10 @@
 
 const NOME_EMPRESA = 'AutoPulse';
 
+// Nome do DONO da estética (quem comprou o sistema). Usado na assinatura dos
+// e-mails de lembrete. Configurável em Configurações; fallback = NOME_EMPRESA.
+const NOME_ESTETICA_KEY = 'ESTETICA_CRM_NOME';
+
 // Cores de marca disponíveis no seletor de tema (Configurações).
 const THEME_KEY = 'ESTETICA_CRM_THEME';
 const THEMES = {
@@ -224,6 +228,23 @@ class EsteticaCRM {
     this.aplicarModoSalvo();
   }
 
+  // Nome do dono da estética (quem usa o sistema). Configurável em Configurações.
+  // Fallback para NOME_EMPRESA caso ainda não tenha sido preenchido.
+  getNomeEstetica() {
+    let nome = '';
+    try { nome = localStorage.getItem(NOME_ESTETICA_KEY) || ''; } catch (e) {}
+    return nome.trim() || NOME_EMPRESA;
+  }
+
+  // Salva o nome da estética nas preferências do dispositivo.
+  salvarNomeEstetica() {
+    const input = document.getElementById('cfg-nome-estetica');
+    if (!input) return;
+    const nome = input.value.trim();
+    try { localStorage.setItem(NOME_ESTETICA_KEY, nome); } catch (e) {}
+    alert(`Nome da estética salvo: ${nome || '(vazio — usará "' + NOME_EMPRESA + '")'}`);
+  }
+
   // Alterna entre modo escuro (padrão) e claro, trocando o fundo da interface.
   alternarModoClaroEscuro() {
     const claro = document.body.classList.toggle('light-mode');
@@ -290,6 +311,10 @@ class EsteticaCRM {
       });
     });
 
+    // Identificação da Estética (assinatura dos e-mails)
+    document.getElementById('btn-salvar-identificacao')?.addEventListener('click', () => this.salvarNomeEstetica());
+    const cfgNome = document.getElementById('cfg-nome-estetica');
+    if (cfgNome) cfgNome.value = this.getNomeEstetica() === NOME_EMPRESA ? '' : this.getNomeEstetica();
     // New Buttons Header
     document.getElementById('btn-novo-orcamento')?.addEventListener('click', () => this.switchTab('orcamentos'));
     document.getElementById('btn-novo-cliente')?.addEventListener('click', () => this.openModal('modal-cliente'));
@@ -797,13 +822,14 @@ class EsteticaCRM {
   // Monta a URL de compose do Gmail com destinatário e mensagem prontos.
   // Abre direto no navegador/Gmail (evita o seletor de aplicativo do SO do mailto:).
   getRecurrenceEmailUrl(rec) {
+    const nomeEst = this.getNomeEstetica();
     const assunto = encodeURIComponent(`Lembrete de Manutenção — ${rec.clienteNome} (${rec.veiculoInfo})`);
     const corpo = encodeURIComponent(
       `Olá ${rec.clienteNome}!\n\n` +
-      `Tudo bem? Passando para lembrar que seu veículo ${rec.veiculoInfo} realizou a ${rec.servicoOriginal} na ${NOME_EMPRESA} e está na hora de fazer a sua ${rec.cicloAtual}!\n\n` +
+      `Tudo bem? Passando para lembrar que seu veículo ${rec.veiculoInfo} realizou a ${rec.servicoOriginal} na ${nomeEst} e está na hora de fazer a sua ${rec.cicloAtual}!\n\n` +
       `A manutenção preventiva é essencial para proteger o brilho e a camada de proteção da pintura.\n\n` +
       `Podemos agendar o seu horário para esta semana?\n\n` +
-      `Atenciosamente,\nFreze`
+      `Atenciosamente,\n${nomeEst}`
     );
     const destino = this.getEmailAtualCliente(rec);
     return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(destino)}&su=${assunto}&body=${corpo}`;
