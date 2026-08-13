@@ -1355,7 +1355,36 @@ class EsteticaCRM {
     this.renderAgenda();
     this.renderDashboard();
     this.renderOrcamentosList();
-    alert(`Serviço agendado com sucesso!\n\n${clienteInfo}\n${this.formatDate(data)} às ${hora}\n\nO agendamento foi adicionado à Agenda.`);
+    // Passo 7 do fluxo: só depois de confirmar o agendamento, oferece envio de confirmação pelo WhatsApp.
+    if (orc) {
+      this.abrirModalConfirmarAgendamento(orc, { data, hora, clienteInfo, servico });
+    } else {
+      alert(`Serviço agendado com sucesso!\n\n${clienteInfo}\n${this.formatDate(data)} às ${hora}\n\nO agendamento foi adicionado à Agenda.`);
+    }
+  }
+
+  // Abre o modal de confirmação de agendamento com a mensagem de WhatsApp pré-preenchida (editável).
+  abrirModalConfirmarAgendamento(orc, ag) {
+    document.getElementById('conf-orc-id').value = orc.id;
+    const texto =
+      `✅ Agendamento confirmado!\n\n` +
+      `*Cliente:* ${orc.clienteNome}\n` +
+      `*Veículo:* ${orc.veiculoInfo}\n` +
+      `*Serviço:* ${ag.servico}\n` +
+      `*Data:* ${this.formatDate(ag.data)}\n` +
+      `*Horário:* ${ag.hora}\n\n` +
+      `Aguardamos você! 🚗\nQualquer dúvida, estamos à disposição.`;
+    document.getElementById('conf-msg').value = texto;
+    this.openModal('modal-confirma-agendamento');
+  }
+
+  // Abre o WhatsApp do cliente com a mensagem de confirmação (já editada no textarea).
+  enviarConfirmacaoWhatsApp() {
+    const orcId = document.getElementById('conf-orc-id').value;
+    const orc = this.data.orcamentos.find(o => o.id === orcId);
+    if (!orc) return;
+    const texto = document.getElementById('conf-msg').value;
+    window.location.href = this.montarWhatsAppUrl(orc.clienteWhats, texto);
   }
 
   criarLembretesDoOrcamento(orc) {
@@ -1479,9 +1508,20 @@ class EsteticaCRM {
     `).join('');
   }
 
+  // Monta link do WhatsApp (wa.me) com o texto já codificado.
+  montarWhatsAppUrl(telefone, texto) {
+    const num = String(telefone || '').replace(/\D/g, '');
+    return `https://wa.me/${num}?text=${encodeURIComponent(texto)}`;
+  }
+
+  // Mensagem de envio do orçamento ao cliente (passo 2 do fluxo).
   getWhatsAppOrcamentoUrl(orc) {
-    const msg = `Olá *${orc.clienteNome}*! Segue o Orçamento *${orc.id}* da ${NOME_EMPRESA} para seu veículo *${orc.veiculoInfo}*:%0A%0A*Valor Total:* R$ ${orc.valorTotal.toFixed(2)}%0A%0AFicamos à disposição para agendar o serviço!`;
-    return `https://api.whatsapp.com/send?phone=${orc.clienteWhats}&text=${msg}`;
+    const texto =
+      `Olá, ${orc.clienteNome}! Tudo bem?\n\n` +
+      `Conforme conversamos, estou enviando seu orçamento referente ao veículo ${orc.veiculoInfo}.\n\n` +
+      `O orçamento completo está em anexo (use o botão "PDF" na lista para anexá-lo).\n\n` +
+      `Qualquer dúvida, estou à disposição!`;
+    return this.montarWhatsAppUrl(orc.clienteWhats, texto);
   }
 
   imprimirPDF(orcId) {

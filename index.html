@@ -1002,6 +1002,32 @@
     </div>
   </div>
 
+  <!-- Modal: Confirmação de Agendamento + WhatsApp (aparece APÓS confirmar o agendamento) -->
+  <div class="modal-backdrop" id="modal-confirma-agendamento">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-paper-plane text-success"></i> Agendamento Confirmado</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-confirma-agendamento')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted" style="margin-bottom:14px;">
+          Agendamento registrado! Revise a mensagem abaixo e envie a confirmação ao cliente pelo WhatsApp.
+        </p>
+        <div class="form-group">
+          <label>Mensagem de confirmação (você pode editar antes de enviar)</label>
+          <textarea id="conf-msg" class="form-control" rows="9" style="resize:vertical;"></textarea>
+        </div>
+        <input type="hidden" id="conf-orc-id">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-confirma-agendamento')">Fechar</button>
+        <button type="button" class="btn btn-whatsapp" onclick="app.enviarConfirmacaoWhatsApp()">
+          <i class="fa-brands fa-whatsapp"></i> Enviar confirmação pelo WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Modal: Novo Lançamento Financeiro -->
   <div class="modal-backdrop" id="modal-transacao">
     <div class="modal-content">
