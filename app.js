@@ -1690,9 +1690,9 @@ class EsteticaCRM {
       <h5>Frota Cadastrada (${c.veiculos.length} Veículos)</h5>
       <ul style="list-style:none; padding:0;" class="mb-3">
         ${c.veiculos.map(v => `
-          <li style="background:#0f0f0f; border:1px solid var(--border-color); padding:10px 14px; border-radius:8px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+          <li class="vehicle-card">
             <div>
-              <strong style="color:#fff; font-size:0.95rem;">${v.modelo}</strong> — Placa <code style="color:var(--primary);">${v.placa}</code> (${v.categoria})<br>
+              <strong class="vehicle-model">${v.modelo}</strong> — Placa <code class="vehicle-placa">${v.placa}</code> (${v.categoria})<br>
               <small class="text-muted">Ano/Cor: ${v.anoCor || 'N/A'} | KM: ${v.km || 'N/A'}</small>
             </div>
             <div class="btn-group gap-1">

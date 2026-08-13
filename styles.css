@@ -1698,6 +1698,31 @@ input, textarea, select, .form-control, code, .pdf-document {
     margin-bottom: 6px;
   }
 
+  /* Card de veículo na tela de detalhes do cliente (respeita claro/escuro) */
+  .vehicle-card {
+    background-color: var(--bg-inset);
+    border: 1px solid var(--border-color);
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .vehicle-model {
+    color: var(--text-main);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+  .vehicle-placa {
+    color: var(--primary);
+    background: transparent;
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
   /* Botões de ação principal com área de toque confortável no celular (mín. ~44px) */
   .btn, .btn-sm {
     min-height: 42px;
