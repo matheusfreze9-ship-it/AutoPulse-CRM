@@ -1379,12 +1379,16 @@ class EsteticaCRM {
   }
 
   // Abre o WhatsApp do cliente com a mensagem de confirmação (já editada no textarea).
+  // Abre em NOVA ABA (window.open) para não fechar/substituir o sistema na aba atual.
   enviarConfirmacaoWhatsApp() {
     const orcId = document.getElementById('conf-orc-id').value;
     const orc = this.data.orcamentos.find(o => o.id === orcId);
     if (!orc) return;
     const texto = document.getElementById('conf-msg').value;
-    window.location.href = this.montarWhatsAppUrl(orc.clienteWhats, texto);
+    const url = this.montarWhatsAppUrl(orc.clienteWhats, texto);
+    const novaAba = window.open(url, '_blank');
+    // Fallback caso o navegador bloqueie o popup: troca a aba atual.
+    if (!novaAba) window.location.href = url;
   }
 
   criarLembretesDoOrcamento(orc) {
