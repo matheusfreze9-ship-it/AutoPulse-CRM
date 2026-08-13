@@ -803,7 +803,7 @@ class EsteticaCRM {
       `Tudo bem? Passando para lembrar que seu veículo ${rec.veiculoInfo} realizou a ${rec.servicoOriginal} na ${NOME_EMPRESA} e está na hora de fazer a sua ${rec.cicloAtual}!\n\n` +
       `A manutenção preventiva é essencial para proteger o brilho e a camada de proteção da pintura.\n\n` +
       `Podemos agendar o seu horário para esta semana?\n\n` +
-      `Atenciosamente,\n${NOME_EMPRESA}`
+      `Atenciosamente,\nFreze`
     );
     const destino = this.getEmailAtualCliente(rec);
     return `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(destino)}&su=${assunto}&body=${corpo}`;
