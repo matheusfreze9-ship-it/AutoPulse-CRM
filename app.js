@@ -162,9 +162,9 @@ const DEFAULT_DATA = {
 // Application Class
 class EsteticaCRM {
   constructor() {
-    // Guarda: se o cliente Supabase nao carregou (ex.: CDN bloqueado/offline),
-    // mostra aviso em vez de quebrar silenciosamente.
-    if (!window.supabaseClient) {
+    // Guarda: se o cliente Supabase nao carregou (ex.: CDN bloqueado/offline)
+    // ou carregou incompleto, mostra aviso em vez de quebrar silenciosamente.
+    if (!window.supabaseClient || !window.supabaseClient.auth) {
       const tela = document.getElementById('login-screen');
       if (tela) tela.innerHTML = '<div class="login-card"><div class="login-brand"><span class="login-monogram">A<b>P</b></span> AutoPulse</div>' +
         '<p class="login-sub">Não foi possível conectar aos servidores do AutoPulse. Verifique sua conexão com a internet e recarregue a página.</p></div>';
