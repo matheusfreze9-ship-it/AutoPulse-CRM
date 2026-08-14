@@ -265,13 +265,29 @@ class EsteticaCRM {
   }
 
   async cadastrar(nomeEstetica, email, senha) {
-    const { error } = await this.supabase.auth.signUp({
-      email, password,
-      options: { data: { nome_estetica: nomeEstetica } }
-    });
-    if (error) { alert(error.message); return; }
-    alert('Conta criada! Se o e-mail de confirmação estiver ativo, confirme para logar. Tentando entrar...');
-    await this.fazerLogin(email, senha);
+    try {
+      console.log('[AutoPulse] cadastrar:', email);
+      const { data, error } = await this.supabase.auth.signUp({
+        email, password: senha,
+        options: { data: { nome_estetica: nomeEstetica } }
+      });
+      if (error) { alert('Erro ao cadastrar: ' + error.message); return; }
+      console.log('[AutoPulse] signUp ok:', data);
+      // Se ja logar direto (confirmacao de e-mail desativada), vai pro app.
+      if (data.session) {
+        this.tenantId = data.session.user.id;
+        await this.carregarDoBanco();
+        this.mostrarApp();
+        return;
+      }
+      // Caso contrario, avisa e manda para a tela de login.
+      alert('Conta criada! Confirme o e-mail (se necessário) e faça login para continuar.');
+      document.getElementById('form-cadastro').style.display = 'none';
+      document.getElementById('form-login').style.display = 'block';
+    } catch (e) {
+      console.error('[AutoPulse] erro em cadastrar', e);
+      alert('Erro inesperado ao cadastrar: ' + (e && e.message ? e.message : e));
+    }
   }
 
   async fazerLogout() {
