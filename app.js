@@ -162,7 +162,17 @@ const DEFAULT_DATA = {
 // Application Class
 class EsteticaCRM {
   constructor() {
-    this.data = this.loadData();
+    // Guarda: se o cliente Supabase nao carregou (ex.: CDN bloqueado/offline),
+    // mostra aviso em vez de quebrar silenciosamente.
+    if (!window.supabaseClient) {
+      const tela = document.getElementById('login-screen');
+      if (tela) tela.innerHTML = '<div class="login-card"><div class="login-brand"><span class="login-monogram">A<b>P</b></span> AutoPulse</div>' +
+        '<p class="login-sub">Não foi possível conectar aos servidores do AutoPulse. Verifique sua conexão com a internet e recarregue a página.</p></div>';
+      return;
+    }
+    this.supabase = window.supabaseClient;
+    this.data = { clientes: [], servicos: [], orcamentos: [], recorrencias: [], agendamentos: [], financeiro: [] };
+    this.tenantId = null;
     this.aplicarTemaSalvo();
     this.currentCategory = 'Hatch';
     this.selectedServiceIds = [];
@@ -171,38 +181,118 @@ class EsteticaCRM {
     this.agendaCalendarMonth = new Date();
     this.agendaRangeStart = '';
     this.agendaRangeEnd = '';
-    this.init();
+    this.bindEvents();
+    this.initAuth();
   }
 
-  loadData() {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(DEFAULT_DATA));
-      return DEFAULT_DATA;
-    }
+  // Decide se mostra o app (se ja logado) ou a tela de login.
+  async initAuth() {
     try {
-      const parsed = JSON.parse(raw);
-      // Garantir compatibilidade com orçamentos antigos
-      if (parsed.orcamentos) {
-        parsed.orcamentos.forEach(o => {
-          if (!o.status) o.status = 'PENDENTE';
-        });
+      const { data: { session } } = await this.supabase.auth.getSession();
+      if (session && session.user) {
+        this.tenantId = session.user.id;
+        await this.carregarDoBanco();
+        this.mostrarApp();
+        return;
       }
-      if (parsed.clientes) {
-        parsed.clientes.forEach(c => {
-          if (!c.observacoes) c.observacoes = '';
-        });
-      }
-      return parsed;
-    } catch (e) {
-      console.error('Erro ao ler localStorage', e);
-      return DEFAULT_DATA;
-    }
+    } catch (e) { console.error('Erro ao verificar sessao', e); }
+    this.mostrarLogin();
   }
 
+  // Carrega todos os dados do tenant logado a partir do banco (Supabase).
+  async carregarDoBanco() {
+    const tid = this.tenantId;
+    const [c, s, o, r, a, f] = await Promise.all([
+      this.supabase.from('clientes').select('*').eq('tenant_id', tid),
+      this.supabase.from('servicos').select('*').eq('tenant_id', tid),
+      this.supabase.from('orcamentos').select('*').eq('tenant_id', tid),
+      this.supabase.from('recorrencias').select('*').eq('tenant_id', tid),
+      this.supabase.from('agendamentos').select('*').eq('tenant_id', tid),
+      this.supabase.from('financeiro').select('*').eq('tenant_id', tid),
+    ]);
+    let servicos = (s.data || []);
+    if (!servicos.length) servicos = await this.semearServicosPadrao(tid);
+    this.data = {
+      clientes: c.data || [],
+      servicos: servicos,
+      orcamentos: o.data || [],
+      recorrencias: r.data || [],
+      agendamentos: a.data || [],
+      financeiro: f.data || [],
+    };
+  }
+
+  // Semeia o catálogo de serviços padrão para um tenant novo.
+  async semearServicosPadrao(tid) {
+    const linhas = DEFAULT_DATA.servicos.map(s => ({ ...s, tenant_id: tid }));
+    const { error } = await this.supabase.from('servicos').upsert(linhas, { onConflict: 'id' });
+    if (error) console.error('Erro ao semear servicos', error);
+    return linhas;
+  }
+
+  // Persiste todo o this.data no banco (upsert por id, isolado por tenant).
+  async salvarNoBanco() {
+    if (!this.tenantId) return;
+    const tid = this.tenantId;
+    const upsert = async (tabela, lista) => {
+      if (!lista || !lista.length) return;
+      const linhas = lista.map(x => ({ ...x, tenant_id: tid }));
+      const { error } = await this.supabase.from(tabela).upsert(linhas, { onConflict: 'id' });
+      if (error) console.error('Erro ao salvar ' + tabela, error);
+    };
+    await Promise.all([
+      upsert('clientes', this.data.clientes),
+      upsert('servicos', this.data.servicos),
+      upsert('orcamentos', this.data.orcamentos),
+      upsert('recorrencias', this.data.recorrencias),
+      upsert('agendamentos', this.data.agendamentos),
+      upsert('financeiro', this.data.financeiro),
+    ]);
+  }
+
+  // Mantém o nome usado em todo o app; faz o upsert assíncrono no banco.
   saveData() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(this.data));
-    this.updateBadgesAndMetrics();
+    this.salvarNoBanco();
+  }
+
+  async fazerLogin(email, senha) {
+    const { error } = await this.supabase.auth.signInWithPassword({ email, password: senha });
+    if (error) { alert(error.message); return; }
+    const { data: { session } } = await this.supabase.auth.getSession();
+    this.tenantId = session.user.id;
+    await this.carregarDoBanco();
+    this.mostrarApp();
+  }
+
+  async cadastrar(nomeEstetica, email, senha) {
+    const { error } = await this.supabase.auth.signUp({
+      email, password,
+      options: { data: { nome_estetica: nomeEstetica } }
+    });
+    if (error) { alert(error.message); return; }
+    alert('Conta criada! Se o e-mail de confirmação estiver ativo, confirme para logar. Tentando entrar...');
+    await this.fazerLogin(email, senha);
+  }
+
+  async fazerLogout() {
+    await this.supabase.auth.signOut();
+    this.tenantId = null;
+    this.mostrarLogin();
+  }
+
+  mostrarLogin() {
+    const tela = document.getElementById('login-screen');
+    const app = document.getElementById('app-shell');
+    if (tela) tela.style.display = 'flex';
+    if (app) app.style.display = 'none';
+  }
+
+  mostrarApp() {
+    const tela = document.getElementById('login-screen');
+    const app = document.getElementById('app-shell');
+    if (tela) tela.style.display = 'none';
+    if (app) app.style.display = '';
+    this.init();
   }
 
   // Aplica uma cor de marca e salva a preferência no dispositivo.
@@ -273,7 +363,6 @@ class EsteticaCRM {
   }
 
   init() {
-    this.bindEvents();
     this.checkRecurrenceStatuses();
     this.renderDashboard();
     this.renderOrcamentoForm();
@@ -302,6 +391,21 @@ class EsteticaCRM {
   }
 
   bindEvents() {
+    // Auth: Login / Cadastro / Logout
+    document.getElementById('btn-login')?.addEventListener('click', () => {
+      const email = document.getElementById('login-email').value.trim();
+      const senha = document.getElementById('login-senha').value;
+      this.fazerLogin(email, senha);
+    });
+    document.getElementById('btn-cadastrar')?.addEventListener('click', () => {
+      const nome = document.getElementById('cad-nome').value.trim();
+      const email = document.getElementById('cad-email').value.trim();
+      const senha = document.getElementById('cad-senha').value;
+      if (!nome || !email || !senha) { alert('Preencha nome, e-mail e senha.'); return; }
+      this.cadastrar(nome, email, senha);
+    });
+    document.getElementById('btn-logout')?.addEventListener('click', () => this.fazerLogout());
+
     // Navigation Tabs
     document.querySelectorAll('.nav-item').forEach(item => {
       item.addEventListener('click', (e) => {

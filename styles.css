@@ -98,6 +98,72 @@ body {
   min-height: 100vh;
 }
 
+/* Tela de Login / Cadastro */
+.login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0b0f17 0%, #111827 100%);
+  padding: 20px;
+}
+.login-card {
+  width: 100%;
+  max-width: 380px;
+  background: var(--bg-card, #121212);
+  border: 1px solid var(--border-color, rgba(255,255,255,0.08));
+  border-radius: 16px;
+  padding: 32px 28px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.login-brand {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--text-main, #f1f5f9);
+  text-align: center;
+  margin-bottom: 4px;
+}
+.login-monogram {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  background: #0f172a;
+  color: #fff;
+  border-radius: 9px;
+  font-weight: 900;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+.login-monogram b { color: var(--primary, #2563eb); }
+.login-sub {
+  text-align: center;
+  color: var(--text-muted, #aab4c0);
+  font-size: 0.85rem;
+  margin-bottom: 22px;
+}
+.login-form h3 {
+  color: var(--text-main, #f1f5f9);
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+.login-form .form-group { margin-bottom: 14px; }
+.login-toggle {
+  text-align: center;
+  margin-top: 14px;
+  font-size: 0.85rem;
+  color: var(--text-muted, #aab4c0);
+}
+.login-toggle a { color: var(--primary, #2563eb); cursor: pointer; }
+.btn-block { width: 100%; justify-content: center; }
+.btn-logout { margin-left: 8px; }
+
+/* Demais telas escondidas até login */
+#app-shell[style*="display: none"] { display: none !important; }
+
 /* Sidebar */
 .sidebar {
   width: 270px;
