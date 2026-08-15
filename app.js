@@ -238,7 +238,10 @@ class EsteticaCRM {
       if (!lista || !lista.length) return;
       const linhas = lista.map(x => ({ ...x, tenant_id: tid }));
       const { error } = await this.supabase.from(tabela).upsert(linhas, { onConflict: 'id' });
-      if (error) console.error('Erro ao salvar ' + tabela, error);
+      if (error) {
+        console.error('Erro ao salvar ' + tabela, error);
+        alert('Erro ao salvar ' + tabela + ': ' + (error.message || error.code || error));
+      }
     };
     await Promise.all([
       upsert('clientes', this.data.clientes),
