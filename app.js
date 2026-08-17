@@ -173,6 +173,7 @@ class EsteticaCRM {
     this.supabase = window.supabaseClient;
     this.data = { clientes: [], servicos: [], orcamentos: [], recorrencias: [], agendamentos: [], financeiro: [] };
     this.tenantId = null;
+    this.bancoCarregado = false;
     this.aplicarTemaSalvo();
     this.currentCategory = 'Hatch';
     this.selectedServiceIds = [];
@@ -223,6 +224,7 @@ class EsteticaCRM {
       agendamentos: a.data || [],
       financeiro: f.data || [],
     };
+    this.bancoCarregado = true;
   }
 
   // Semeia o catálogo de serviços padrão para um tenant novo.
@@ -233,7 +235,11 @@ class EsteticaCRM {
     return linhas;
   }
 
-  // Persiste todo o this.data no banco (upsert por id, isolado por tenant).
+  // Persiste todo o this.data no banco (sincronizacao completa por tenant):
+  // - faz upsert dos itens presentes (adicionar/editar)
+  // - apaga do banco os itens que sumiram do app (exclusao em massa),
+  //   mas SOMENTE se o banco ja foi carregado (evita apagar dados se o
+  //   carregamento falhou e this.data veio vazio por engano).
   async salvarNoBanco() {
     if (!this.tenantId) {
       console.error('salvarNoBanco: tenantId vazio — usuario pode nao estar logado');
@@ -242,22 +248,29 @@ class EsteticaCRM {
     }
     const tid = this.tenantId;
     console.log('[AutoPulse] salvarNoBanco tenant_id=', tid);
-    const upsert = async (tabela, lista) => {
-      if (!lista || !lista.length) return;
-      const linhas = lista.map(x => ({ ...x, tenant_id: tid }));
-      const { error } = await this.supabase.from(tabela).upsert(linhas, { onConflict: 'id' });
-      if (error) {
-        console.error('Erro ao salvar ' + tabela, error);
-        alert('Erro ao salvar ' + tabela + ': ' + (error.message || error.code || error));
+    const sinc = async (tabela, lista) => {
+      const linhas = (lista || []).map(x => ({ ...x, tenant_id: tid }));
+      // Upsert dos presentes (adicionar/editar)
+      if (linhas.length) {
+        const { error } = await this.supabase.from(tabela).upsert(linhas, { onConflict: 'id' });
+        if (error) { console.error('Erro ao salvar ' + tabela, error); alert('Erro ao salvar ' + tabela + ': ' + (error.message || error.code || error)); }
+      }
+      // Delete dos ausentes (exclusao em massa) — so se ja carregou do banco
+      if (this.bancoCarregado) {
+        const ids = linhas.map(x => x.id);
+        let q = this.supabase.from(tabela).delete().eq('tenant_id', tid);
+        if (ids.length) q = q.not('id', 'in', ids);
+        const { error } = await q;
+        if (error) console.error('Erro ao sincronizar (delete) ' + tabela, error);
       }
     };
     await Promise.all([
-      upsert('clientes', this.data.clientes),
-      upsert('servicos', this.data.servicos),
-      upsert('orcamentos', this.data.orcamentos),
-      upsert('recorrencias', this.data.recorrencias),
-      upsert('agendamentos', this.data.agendamentos),
-      upsert('financeiro', this.data.financeiro),
+      sinc('clientes', this.data.clientes),
+      sinc('servicos', this.data.servicos),
+      sinc('orcamentos', this.data.orcamentos),
+      sinc('recorrencias', this.data.recorrencias),
+      sinc('agendamentos', this.data.agendamentos),
+      sinc('financeiro', this.data.financeiro),
     ]);
   }
 
