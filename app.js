@@ -261,6 +261,13 @@ class EsteticaCRM {
     ]);
   }
 
+  // Remove de fato uma linha do banco (o upsert nao deleta).
+  excluirDoBanco(tabela, id) {
+    if (!this.tenantId) return;
+    this.supabase.from(tabela).delete().eq('id', id).eq('tenant_id', this.tenantId)
+      .then(({ error }) => { if (error) console.error('Erro ao excluir ' + tabela, error); });
+  }
+
   // Mantém o nome usado em todo o app; faz o upsert assíncrono no banco.
   saveData() {
     this.salvarNoBanco();
@@ -647,6 +654,7 @@ class EsteticaCRM {
   deleteOrcamento(id) {
     if (confirm(`Tem certeza que deseja excluir o orçamento ${id}?`)) {
       this.data.orcamentos = this.data.orcamentos.filter(o => o.id !== id);
+      this.excluirDoBanco('orcamentos', id);
       this.saveData();
       this.renderOrcamentosList();
       this.renderDashboard();
@@ -656,6 +664,7 @@ class EsteticaCRM {
   deleteCliente(id) {
     if (confirm('Tem certeza que deseja excluir este cliente? Todos os veículos e registros associados serão removidos.')) {
       this.data.clientes = this.data.clientes.filter(c => c.id !== id);
+      this.excluirDoBanco('clientes', id);
       this.saveData();
       this.renderCRM();
       this.renderOrcamentoForm();
@@ -787,6 +796,7 @@ class EsteticaCRM {
   deleteServico(id) {
     if (confirm('Tem certeza que deseja excluir este serviço do catálogo?')) {
       this.data.servicos = this.data.servicos.filter(s => s.id !== id);
+      this.excluirDoBanco('servicos', id);
       this.saveData();
       this.renderServicesCatalog();
       this.renderServicesCheckboxes();
@@ -889,6 +899,7 @@ class EsteticaCRM {
   deleteAgendamento(id) {
     if (confirm('Deseja cancelar/excluir este agendamento?')) {
       this.data.agendamentos = this.data.agendamentos.filter(a => a.id !== id);
+      this.excluirDoBanco('agendamentos', id);
       this.saveData();
       this.renderAgenda();
       this.renderDashboard();
@@ -898,6 +909,7 @@ class EsteticaCRM {
   deleteTransacao(id) {
     if (confirm('Deseja excluir este lançamento financeiro?')) {
       this.data.financeiro = this.data.financeiro.filter(f => f.id !== id);
+      this.excluirDoBanco('financeiro', id);
       this.saveData();
       this.renderFinanceiro();
       this.renderDashboard();
@@ -1069,6 +1081,7 @@ class EsteticaCRM {
   deleteLembrete(recId) {
     if (confirm('Tem certeza que deseja excluir este lembrete de manutenção?')) {
       this.data.recorrencias = this.data.recorrencias.filter(r => r.id !== recId);
+      this.excluirDoBanco('recorrencias', recId);
       this.saveData();
       this.renderRecorrencias();
       this.renderDashboard();
