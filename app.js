@@ -405,6 +405,15 @@ class EsteticaCRM {
     if (nome) nome.textContent = this.getNomeEstetica();
   }
 
+  // Sanitiza qualquer dado do usuario antes de jogar em innerHTML (previne XSS).
+  // Escapa os 5 caracteres perigosos de HTML/atributo.
+  escapeHtml(val) {
+    if (val === null || val === undefined) return '';
+    return String(val).replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
   // Salva o nome da estética nas preferências do dispositivo.
   salvarNomeEstetica() {
     const input = document.getElementById('cfg-nome-estetica');
@@ -1204,13 +1213,13 @@ class EsteticaCRM {
       } else {
         tbody.innerHTML = alertas.map(rec => `
           <tr>
-            <td><strong>${rec.clienteNome}</strong></td>
-            <td>${rec.veiculoInfo}</td>
-            <td>${rec.servicoOriginal} (${rec.cicloAtual})</td>
+            <td><strong>${this.escapeHtml(rec.clienteNome)}</strong></td>
+            <td>${this.escapeHtml(rec.veiculoInfo)}</td>
+            <td>${this.escapeHtml(rec.servicoOriginal)} (${this.escapeHtml(rec.cicloAtual)})</td>
             <td>${this.formatDate(rec.dataAplicacao)}</td>
             <td>
               <span class="badge ${rec.status === 'VENCIDO' ? 'badge-danger' : 'badge-warning'}">
-                <i class="fa-solid fa-triangle-exclamation"></i> ${rec.status}
+                <i class="fa-solid fa-triangle-exclamation"></i> ${this.escapeHtml(rec.status)}
               </span>
             </td>
             <td>${this.formatDate(rec.dataLimite90d)}</td>
@@ -1242,10 +1251,10 @@ class EsteticaCRM {
         agdContainer.innerHTML = agdToday.map(a => `
           <div class="agenda-item-card mb-2">
             <div class="agenda-item-main">
-              <span class="agenda-item-time">${a.hora}</span>
+              <span class="agenda-item-time">${this.escapeHtml(a.hora)}</span>
               <div class="agenda-item-info">
-                <h4>${a.clienteInfo}</h4>
-                <p>${a.servico}</p>
+                <h4>${this.escapeHtml(a.clienteInfo)}</h4>
+                <p>${this.escapeHtml(a.servico)}</p>
               </div>
             </div>
           </div>
@@ -1709,8 +1718,8 @@ class EsteticaCRM {
       <tr class="orc-row">
         <td data-label="Código"><strong>${o.id}</strong></td>
         <td data-label="Cliente / Veículo">
-          <strong>${o.clienteNome}</strong><br>
-          <small class="text-muted">${o.veiculoInfo}</small>
+          <strong>${this.escapeHtml(o.clienteNome)}</strong><br>
+          <small class="text-muted">${this.escapeHtml(o.veiculoInfo)}</small>
         </td>
         <td data-label="Status">
           <span class="badge ${this.getOrcamentoStatusBadge(o.status)}">
@@ -1794,7 +1803,7 @@ class EsteticaCRM {
               <span class="pdf-service-price">R$ ${preco.toFixed(2)}</span>
             </div>
             <ul class="pdf-checklist-bullets">
-              ${s.checklist.map(item => `<li>${item}</li>`).join('')}
+              ${s.checklist.map(item => `<li>${this.escapeHtml(item)}</li>`).join('')}
             </ul>
           </div>
         `;
@@ -1805,7 +1814,7 @@ class EsteticaCRM {
       cardsHtml += `
         <div class="pdf-service-card">
           <div class="pdf-service-card-header">
-            <span class="pdf-service-title">Item Extra: ${item.nome}</span>
+            <span class="pdf-service-title">Item Extra: ${this.escapeHtml(item.nome)}</span>
             <span class="pdf-service-price">R$ ${item.preco.toFixed(2)}</span>
           </div>
           <ul class="pdf-checklist-bullets">
@@ -1839,13 +1848,13 @@ class EsteticaCRM {
       <div class="service-card">
         <div>
           <div class="service-card-header">
-            <h4>${s.nome}</h4>
-            <span class="badge badge-info">${s.categoria}</span>
+            <h4>${this.escapeHtml(s.nome)}</h4>
+            <span class="badge badge-info">${this.escapeHtml(s.categoria)}</span>
           </div>
           <div class="checklist-box">
             <strong>Checklist de Execução:</strong>
             <ul>
-              ${s.checklist.map(item => `<li><i class="fa-solid fa-check"></i> ${item}</li>`).join('')}
+              ${s.checklist.map(item => `<li><i class="fa-solid fa-check"></i> ${this.escapeHtml(item)}</li>`).join('')}
             </ul>
           </div>
         </div>
@@ -1901,7 +1910,7 @@ class EsteticaCRM {
     }
     lista.innerHTML = this.data.categorias.map(c => `
       <div class="cat-row">
-        <span>${c.nome}</span>
+        <span>${this.escapeHtml(c.nome)}</span>
         <button class="btn btn-sm btn-danger" onclick="app.removerCategoria('${c.id}')" title="Remover categoria">
           <i class="fa-solid fa-trash"></i>
         </button>
@@ -1945,7 +1954,7 @@ class EsteticaCRM {
       const sel = document.getElementById(id);
       if (!sel) return;
       const atual = sel.value;
-      sel.innerHTML = this.data.categorias.map(c => `<option value="${c.nome}">${c.nome}</option>`).join('');
+      sel.innerHTML = this.data.categorias.map(c => `<option value="${this.escapeHtml(c.nome)}">${this.escapeHtml(c.nome)}</option>`).join('');
       if (this.data.categorias.some(c => c.nome === atual)) sel.value = atual;
     });
   }
@@ -1966,9 +1975,9 @@ class EsteticaCRM {
 
     tbody.innerHTML = filtered.map(c => `
       <tr>
-        <td data-label="Cliente"><strong>${c.nome}</strong><br><small class="text-muted">${c.email || ''}</small></td>
-        <td data-label="WhatsApp"><i class="fa-brands fa-whatsapp text-success"></i> ${c.whatsapp}</td>
-        <td data-label="Veículos">${c.veiculos.map(v => `<span class="badge badge-secondary" style="margin-bottom:2px; display:inline-block;">${v.modelo} (${v.placa})</span>`).join(' ')}</td>
+        <td data-label="Cliente"><strong>${this.escapeHtml(c.nome)}</strong><br><small class="text-muted">${this.escapeHtml(c.email || '')}</small></td>
+        <td data-label="WhatsApp"><i class="fa-brands fa-whatsapp text-success"></i> ${this.escapeHtml(c.whatsapp)}</td>
+        <td data-label="Veículos">${c.veiculos.map(v => `<span class="badge badge-secondary" style="margin-bottom:2px; display:inline-block;">${this.escapeHtml(v.modelo)} (${this.escapeHtml(v.placa)})</span>`).join(' ')}</td>
         <td data-label="Total" class="text-primary font-weight-bold">R$ ${(c.totalGasto || 0).toFixed(2)}</td>
         <td data-label="Ações">
           <button class="btn btn-sm btn-secondary" onclick="app.viewClientDetails('${c.id}')" title="Ver Detalhes e Frota">
@@ -1994,7 +2003,7 @@ class EsteticaCRM {
 
     body.innerHTML = `
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-        <h4>${c.nome}</h4>
+        <h4>${this.escapeHtml(c.nome)}</h4>
         <div class="btn-group gap-1">
           <button class="btn btn-sm btn-secondary" onclick="app.editarCliente('${c.id}')">
             <i class="fa-solid fa-pen-to-square"></i> Editar Cliente
@@ -2007,9 +2016,9 @@ class EsteticaCRM {
           </button>
         </div>
       </div>
-      <p class="text-muted" style="margin-top:6px;"><i class="fa-solid fa-phone"></i> ${c.whatsapp} | <i class="fa-solid fa-envelope"></i> ${c.email || 'N/A'}</p>
-      <p class="text-muted"><i class="fa-solid fa-location-dot"></i> ${c.endereco || 'Endereço não cadastrado'}</p>
-      ${c.observacoes ? `<p class="text-muted" style="margin-top:8px;"><i class="fa-solid fa-note-sticky"></i> <strong>Obs:</strong> ${c.observacoes}</p>` : ''}
+      <p class="text-muted" style="margin-top:6px;"><i class="fa-solid fa-phone"></i> ${this.escapeHtml(c.whatsapp)} | <i class="fa-solid fa-envelope"></i> ${this.escapeHtml(c.email || 'N/A')}</p>
+      <p class="text-muted"><i class="fa-solid fa-location-dot"></i> ${this.escapeHtml(c.endereco || 'Endereço não cadastrado')}</p>
+      ${c.observacoes ? `<p class="text-muted" style="margin-top:8px;"><i class="fa-solid fa-note-sticky"></i> <strong>Obs:</strong> ${this.escapeHtml(c.observacoes)}</p>` : ''}
       <hr class="my-3">
 
       <h5>Frota Cadastrada (${c.veiculos.length} Veículos)</h5>
@@ -2017,8 +2026,8 @@ class EsteticaCRM {
         ${c.veiculos.map(v => `
           <li class="vehicle-card">
             <div>
-              <strong class="vehicle-model">${v.modelo}</strong> — Placa <code class="vehicle-placa">${v.placa}</code> (${v.categoria})<br>
-              <small class="text-muted">Ano/Cor: ${v.anoCor || 'N/A'} | KM: ${v.km || 'N/A'}</small>
+              <strong class="vehicle-model">${this.escapeHtml(v.modelo)}</strong> — Placa <code class="vehicle-placa">${this.escapeHtml(v.placa)}</code> (${this.escapeHtml(v.categoria)})<br>
+              <small class="text-muted">Ano/Cor: ${this.escapeHtml(v.anoCor || 'N/A')} | KM: ${this.escapeHtml(v.km || 'N/A')}</small>
             </div>
             <div class="btn-group gap-1">
               <button class="btn btn-sm btn-secondary" onclick="app.abrirModalVeiculo('${c.id}', '${v.id}')" title="Editar Veículo">
@@ -2108,10 +2117,10 @@ class EsteticaCRM {
 
     tbody.innerHTML = ativas.map(r => `
       <tr>
-        <td data-label="Cliente"><strong>${r.clienteNome}</strong><br><small class="text-muted">${r.clienteWhats}</small></td>
-        <td data-label="Veículo">${r.veiculoInfo}</td>
-        <td data-label="Serviço">${r.servicoOriginal}</td>
-        <td data-label="Ciclo"><span class="badge badge-info">${r.cicloAtual}</span></td>
+        <td data-label="Cliente"><strong>${this.escapeHtml(r.clienteNome)}</strong><br><small class="text-muted">${this.escapeHtml(r.clienteWhats)}</small></td>
+        <td data-label="Veículo">${this.escapeHtml(r.veiculoInfo)}</td>
+        <td data-label="Serviço">${this.escapeHtml(r.servicoOriginal)}</td>
+        <td data-label="Ciclo"><span class="badge badge-info">${this.escapeHtml(r.cicloAtual)}</span></td>
         <td data-label="Data Aplicação">${this.formatDate(r.dataAplicacao)}</td>
         <td data-label="Lembrete"><strong class="text-warning">${this.formatDate(r.dataGatilhoAlerta)}</strong></td>
         <td data-label="Prazo Limite"><strong class="text-danger">${this.formatDate(r.dataLimite90d)}</strong></td>
@@ -2330,10 +2339,10 @@ class EsteticaCRM {
     container.innerHTML = agdsFiltered.map(a => `
       <div class="agenda-item-card">
         <div class="agenda-item-main">
-          <span class="agenda-item-time">${a.hora}</span>
+          <span class="agenda-item-time">${this.escapeHtml(a.hora)}</span>
           <div class="agenda-item-info">
-            <h4>${a.clienteInfo}</h4>
-            <p>${a.servico} | <strong>${this.formatDate(a.data)}</strong></p>
+            <h4>${this.escapeHtml(a.clienteInfo)}</h4>
+            <p>${this.escapeHtml(a.servico)} | <strong>${this.formatDate(a.data)}</strong></p>
           </div>
         </div>
         <div class="agenda-item-actions">
@@ -2352,7 +2361,7 @@ class EsteticaCRM {
     const sel = targetSel || document.getElementById('agd-cliente-veiculo');
     if (!sel) return;
     sel.innerHTML = this.data.clientes.flatMap(c =>
-      c.veiculos.map(v => `<option value="${c.nome} — ${v.modelo} (${v.placa})">${c.nome} — ${v.modelo} (${v.placa})</option>`)
+      c.veiculos.map(v => `<option value="${this.escapeHtml(c.nome)} — ${this.escapeHtml(v.modelo)} (${this.escapeHtml(v.placa)})">${this.escapeHtml(c.nome)} — ${this.escapeHtml(v.modelo)} (${this.escapeHtml(v.placa)})</option>`)
     ).join('');
   }
 
@@ -2387,7 +2396,7 @@ class EsteticaCRM {
 
       finTbody.innerHTML = this.data.financeiro.map(f => `
         <tr>
-          <td data-label="Descrição">${f.descricao}</td>
+          <td data-label="Descrição">${this.escapeHtml(f.descricao)}</td>
           <td data-label="Tipo"><span class="badge ${f.tipo === 'Receita' ? 'badge-success' : 'badge-danger'}">${f.tipo}</span></td>
           <td data-label="Valor" class="font-weight-bold ${f.tipo === 'Receita' ? 'text-success' : 'text-danger'}">
             ${f.tipo === 'Receita' ? '+' : '-'} R$ ${f.valor.toFixed(2)}
