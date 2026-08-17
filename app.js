@@ -1050,7 +1050,7 @@ class EsteticaCRM {
   getGoogleCalendarUrl(rec) {
     const dateStr = rec.dataGatilhoAlerta ? rec.dataGatilhoAlerta.replace(/-/g, '') : new Date().toISOString().split('T')[0].replace(/-/g, '');
     const title = encodeURIComponent(`🔔 LEMBRETE DE MANUTENÇÃO: ${rec.clienteNome} (${rec.veiculoInfo})`);
-    const details = encodeURIComponent(`Lembrete de manutenção para a ${rec.cicloAtual} do veículo ${rec.veiculoInfo}.%0ACliente: ${rec.clienteNome}%0AWhatsApp: ${rec.clienteWhats}%0A%0AAcessar o CRM para disparar a mensagem no WhatsApp.`);
+    const details = encodeURIComponent(`Lembrete de manutenção para a ${rec.cicloAtual} do veículo ${rec.veiculoInfo}.%0ACliente: ${rec.clienteNome}%0AWhatsApp: ${rec.clienteWhats}%0AE-mail: ${rec.clienteEmail || 'não cadastrado'}%0A%0AAcessar o CRM para disparar a mensagem no WhatsApp ou e-mail.`);
     const dates = `${dateStr}T090000/${dateStr}T100000`;
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&details=${details}`;
   }
@@ -1993,10 +1993,13 @@ class EsteticaCRM {
         <td data-label="Lembrete"><strong class="text-warning">${this.formatDate(r.dataGatilhoAlerta)}</strong></td>
         <td data-label="Prazo Limite"><strong class="text-danger">${this.formatDate(r.dataLimite90d)}</strong></td>
         <td data-label="Lembrete por E-mail">
+          <a href="${this.getRecurrenceWhatsAppUrl(r)}" target="_blank" class="btn btn-sm btn-success" title="Enviar lembrete no WhatsApp do cliente">
+            <i class="fa-solid fa-whatsapp"></i> WhatsApp
+          </a>
           <button class="btn btn-sm btn-email" onclick="app.dispararLembreteEmail(app.data.recorrencias.find(x=>x.id==='${r.id}'))">
             <i class="fa-solid fa-envelope"></i> Enviar E-mail
           </button>
-          <a href="${this.getGoogleCalendarUrl(r)}" target="_blank" class="btn btn-sm btn-secondary" title="Adicionar Lembrete no Google Agenda">
+          <a href="${this.getGoogleCalendarUrl(r)}" target="_blank" class="btn btn-sm btn-secondary" title="Adicionar Lembrete no Google Agenda (para VOCÊ se lembrar)">
             <i class="fa-solid fa-calendar-plus text-primary"></i> Agenda
           </a>
         </td>
