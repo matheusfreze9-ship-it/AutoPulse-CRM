@@ -235,8 +235,13 @@ class EsteticaCRM {
 
   // Persiste todo o this.data no banco (upsert por id, isolado por tenant).
   async salvarNoBanco() {
-    if (!this.tenantId) return;
+    if (!this.tenantId) {
+      console.error('salvarNoBanco: tenantId vazio — usuario pode nao estar logado');
+      alert('Não foi possível salvar: sessão não encontrada. Faça login novamente.');
+      return;
+    }
     const tid = this.tenantId;
+    console.log('[AutoPulse] salvarNoBanco tenant_id=', tid);
     const upsert = async (tabela, lista) => {
       if (!lista || !lista.length) return;
       const linhas = lista.map(x => ({ ...x, tenant_id: tid }));
