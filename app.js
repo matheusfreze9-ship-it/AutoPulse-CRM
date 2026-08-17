@@ -353,6 +353,7 @@ class EsteticaCRM {
     const app = document.getElementById('app-shell');
     if (tela) tela.style.display = 'none';
     if (app) app.style.display = '';
+    this.renderBadgeEstetica();
     this.init();
   }
 
@@ -387,12 +388,30 @@ class EsteticaCRM {
     return nome.trim() || NOME_EMPRESA;
   }
 
+  // Iniciais (ate 2 letras) do nome da estetica para o avatar do badge.
+  getIniciaisEstetica() {
+    const nome = this.getNomeEstetica().replace(/[^\p{L}\s]/gu, '').trim();
+    const partes = nome.split(/\s+/).filter(Boolean);
+    if (partes.length === 0) return NOME_EMPRESA.slice(0, 2).toUpperCase();
+    if (partes.length === 1) return partes[0].slice(0, 2).toUpperCase();
+    return (partes[0][0] + partes[1][0]).toUpperCase();
+  }
+
+  // Atualiza o badge lateral (avatar + nome) com o nome da estetica configurado.
+  renderBadgeEstetica() {
+    const avatar = document.querySelector('.user-avatar');
+    const nome = document.querySelector('.user-name');
+    if (avatar) avatar.textContent = this.getIniciaisEstetica();
+    if (nome) nome.textContent = this.getNomeEstetica();
+  }
+
   // Salva o nome da estética nas preferências do dispositivo.
   salvarNomeEstetica() {
     const input = document.getElementById('cfg-nome-estetica');
     if (!input) return;
     const nome = input.value.trim();
     try { localStorage.setItem(NOME_ESTETICA_KEY, nome); } catch (e) {}
+    this.renderBadgeEstetica();
     alert(`Nome da estética salvo: ${nome || '(vazio — usará "' + NOME_EMPRESA + '")'}`);
   }
 
