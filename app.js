@@ -210,6 +210,9 @@ class EsteticaCRM {
       this.supabase.from('agendamentos').select('*').eq('tenant_id', tid),
       this.supabase.from('financeiro').select('*').eq('tenant_id', tid),
     ]);
+    [['clientes', c], ['servicos', s], ['orcamentos', o], ['recorrencias', r], ['agendamentos', a], ['financeiro', f]].forEach(([nome, res]) => {
+      if (res.error) console.error('Erro ao carregar ' + nome, res.error);
+    });
     let servicos = (s.data || []);
     if (!servicos.length) servicos = await this.semearServicosPadrao(tid);
     this.data = {
