@@ -370,6 +370,9 @@
               <button class="btn btn-primary" id="btn-novo-servico-modal">
                 <i class="fa-solid fa-plus"></i> Adicionar Novo Serviço
               </button>
+              <button class="btn btn-secondary" onclick="app.abrirModalGerenciarCategorias()" title="Criar / remover categorias de serviço">
+                <i class="fa-solid fa-tags"></i> Gerenciar Categorias
+              </button>
             </div>
             <div class="card-body">
               <div class="services-grid" id="services-cards-container">
@@ -882,12 +885,7 @@
           <div class="form-group">
             <label>Categoria</label>
             <select id="edit-srv-categoria" class="form-control" required>
-              <option value="Lavagens">Lavagens</option>
-              <option value="Polimentos">Polimentos</option>
-              <option value="Proteção">Proteção</option>
-              <option value="Higienização">Higienização</option>
-              <option value="Restauração">Restauração</option>
-              <option value="Geral">Geral</option>
+              <!-- populado via JS (app.popularSelectsCategoria) -->
             </select>
           </div>
           <div class="form-row-2">
@@ -939,12 +937,7 @@
           <div class="form-group">
             <label>Categoria</label>
             <select id="novo-srv-categoria" class="form-control" required>
-              <option value="Lavagens">Lavagens</option>
-              <option value="Polimentos">Polimentos</option>
-              <option value="Proteção">Proteção</option>
-              <option value="Higienização">Higienização</option>
-              <option value="Restauração">Restauração</option>
-              <option value="Geral">Geral</option>
+              <!-- populado via JS (app.popularSelectsCategoria) -->
             </select>
           </div>
           <div class="form-row-2">
@@ -1240,5 +1233,30 @@
       document.getElementById('form-login').style.display = 'block';
     });
   </script>
+
+  <div class="modal-backdrop" id="modal-gerenciar-categorias">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Gerenciar Categorias de Serviço</h3>
+        <button class="modal-close" onclick="app.closeModal('modal-gerenciar-categorias')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>Nova Categoria</label>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="nova-categoria-nome" class="form-control" placeholder="Ex: Vitrificação">
+            <button type="button" class="btn btn-primary" onclick="app.criarCategoria()"><i class="fa-solid fa-plus"></i> Criar</button>
+          </div>
+        </div>
+        <hr>
+        <label>Categorias Existentes</label>
+        <div id="gerenciar-categorias-lista"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="app.closeModal('modal-gerenciar-categorias')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

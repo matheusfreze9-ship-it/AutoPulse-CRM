@@ -171,7 +171,7 @@ class EsteticaCRM {
       return;
     }
     this.supabase = window.supabaseClient;
-    this.data = { clientes: [], servicos: [], orcamentos: [], recorrencias: [], agendamentos: [], financeiro: [] };
+    this.data = { clientes: [], servicos: [], orcamentos: [], recorrencias: [], agendamentos: [], financeiro: [], categorias: [] };
     this.tenantId = null;
     this.bancoCarregado = false;
     this.aplicarTemaSalvo();
@@ -203,19 +203,22 @@ class EsteticaCRM {
   // Carrega todos os dados do tenant logado a partir do banco (Supabase).
   async carregarDoBanco() {
     const tid = this.tenantId;
-    const [c, s, o, r, a, f] = await Promise.all([
+    const [c, s, o, r, a, f, cat] = await Promise.all([
       this.supabase.from('clientes').select('*').eq('tenant_id', tid),
       this.supabase.from('servicos').select('*').eq('tenant_id', tid),
       this.supabase.from('orcamentos').select('*').eq('tenant_id', tid),
       this.supabase.from('recorrencias').select('*').eq('tenant_id', tid),
       this.supabase.from('agendamentos').select('*').eq('tenant_id', tid),
       this.supabase.from('financeiro').select('*').eq('tenant_id', tid),
+      this.supabase.from('categorias').select('*').eq('tenant_id', tid),
     ]);
-    [['clientes', c], ['servicos', s], ['orcamentos', o], ['recorrencias', r], ['agendamentos', a], ['financeiro', f]].forEach(([nome, res]) => {
+    [['clientes', c], ['servicos', s], ['orcamentos', o], ['recorrencias', r], ['agendamentos', a], ['financeiro', f], ['categorias', cat]].forEach(([nome, res]) => {
       if (res.error) console.error('Erro ao carregar ' + nome, res.error);
     });
     let servicos = (s.data || []);
     if (!servicos.length) servicos = await this.semearServicosPadrao(tid);
+    let categorias = (cat.data || []);
+    if (!categorias.length) categorias = await this.semearCategoriasPadrao(tid);
     this.data = {
       clientes: c.data || [],
       servicos: servicos,
@@ -223,6 +226,7 @@ class EsteticaCRM {
       recorrencias: r.data || [],
       agendamentos: a.data || [],
       financeiro: f.data || [],
+      categorias: categorias,
     };
     this.bancoCarregado = true;
   }
@@ -232,6 +236,15 @@ class EsteticaCRM {
     const linhas = DEFAULT_DATA.servicos.map(s => ({ ...s, tenant_id: tid }));
     const { error } = await this.supabase.from('servicos').upsert(linhas, { onConflict: 'id' });
     if (error) console.error('Erro ao semear servicos', error);
+    return linhas;
+  }
+
+  // Semeia as categorias de servico padrao para um tenant novo.
+  async semearCategoriasPadrao(tid) {
+    const nomes = ['Lavagens', 'Polimentos', 'Proteção', 'Higienização', 'Restauração', 'Geral'];
+    const linhas = nomes.map(n => ({ id: 'cat-' + Date.now() + '-' + Math.floor(Math.random() * 1e6), nome: n, tenant_id: tid }));
+    const { error } = await this.supabase.from('categorias').upsert(linhas, { onConflict: 'id' });
+    if (error) console.error('Erro ao semear categorias', error);
     return linhas;
   }
 
@@ -271,6 +284,7 @@ class EsteticaCRM {
       sinc('recorrencias', this.data.recorrencias),
       sinc('agendamentos', this.data.agendamentos),
       sinc('financeiro', this.data.financeiro),
+      sinc('categorias', this.data.categorias),
     ]);
   }
 
@@ -823,6 +837,7 @@ class EsteticaCRM {
 
     document.getElementById('edit-srv-id').value = s.id;
     document.getElementById('edit-srv-nome').value = s.nome;
+    this.popularSelectsCategoria();
     document.getElementById('edit-srv-categoria').value = s.categoria;
     document.getElementById('edit-srv-hatch').value = s.precos.Hatch;
     document.getElementById('edit-srv-sedan').value = s.precos.Sedan;
@@ -874,6 +889,7 @@ class EsteticaCRM {
     document.getElementById('novo-srv-suv').value = '';
     document.getElementById('novo-srv-caminhonete').value = '';
     document.getElementById('novo-srv-checklist').value = '';
+    this.popularSelectsCategoria();
     this.openModal('modal-novo-servico');
   }
 
@@ -1791,14 +1807,22 @@ class EsteticaCRM {
     const container = document.getElementById('services-cards-container');
     if (!container) return;
 
-    container.innerHTML = this.data.servicos.map(s => `
+    // Agrupa servicos por categoria (respeitando a ordem das categorias cadastradas)
+    const cats = this.data.categorias.map(c => c.nome);
+    const semCat = this.data.servicos.filter(s => !cats.includes(s.categoria));
+    const grupos = cats.map(nome => ({
+      nome,
+      servicos: this.data.servicos.filter(s => s.categoria === nome)
+    })).filter(g => g.servicos.length > 0);
+    if (semCat.length) grupos.push({ nome: 'Sem Categoria', servicos: semCat });
+
+    const cardHtml = (s) => `
       <div class="service-card">
         <div>
           <div class="service-card-header">
             <h4>${s.nome}</h4>
             <span class="badge badge-info">${s.categoria}</span>
           </div>
-          
           <div class="checklist-box">
             <strong>Checklist de Execução:</strong>
             <ul>
@@ -1806,7 +1830,6 @@ class EsteticaCRM {
             </ul>
           </div>
         </div>
-
         <div style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:8px;">
           <small class="text-muted">Preços por Categoria:</small>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:0.8rem; margin-top:4px;">
@@ -1825,8 +1848,89 @@ class EsteticaCRM {
           </div>
         </div>
       </div>
+    `;
+
+    if (!grupos.length) {
+      container.innerHTML = `<div class="agenda-empty-state"><i class="fa-solid fa-box-open"></i><p>Nenhum serviço cadastrado. Clique em "Adicionar Serviço".</p></div>`;
+      return;
+    }
+
+    container.innerHTML = grupos.map(g => `
+      <div class="cat-group">
+        <h3 class="cat-group-title"><i class="fa-solid fa-layer-group"></i> ${g.nome} <small>(${g.servicos.length})</small></h3>
+        <div class="services-grid">
+          ${g.servicos.map(cardHtml).join('')}
+        </div>
+      </div>
     `).join('');
   }
+
+  // ==========================================
+  // GERENCIAR CATEGORIAS DE SERVIÇO
+  // ==========================================
+  abrirModalGerenciarCategorias() {
+    this.renderGerenciarCategorias();
+    this.openModal('modal-gerenciar-categorias');
+  }
+
+  renderGerenciarCategorias() {
+    const lista = document.getElementById('gerenciar-categorias-lista');
+    if (!lista) return;
+    if (!this.data.categorias.length) {
+      lista.innerHTML = '<p class="text-muted">Nenhuma categoria cadastrada.</p>';
+      return;
+    }
+    lista.innerHTML = this.data.categorias.map(c => `
+      <div class="cat-row">
+        <span>${c.nome}</span>
+        <button class="btn btn-sm btn-danger" onclick="app.removerCategoria('${c.id}')" title="Remover categoria">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>
+    `).join('');
+  }
+
+  criarCategoria() {
+    const nome = document.getElementById('nova-categoria-nome').value.trim();
+    if (!nome) { alert('Informe o nome da categoria!'); return; }
+    if (this.data.categorias.some(c => c.nome.toLowerCase() === nome.toLowerCase())) {
+      alert('Já existe uma categoria com esse nome.'); return;
+    }
+    this.data.categorias.push({ id: 'cat-' + Date.now() + '-' + Math.floor(Math.random() * 1e6), nome });
+    this.saveData();
+    document.getElementById('nova-categoria-nome').value = '';
+    this.renderGerenciarCategorias();
+    this.popularSelectsCategoria();
+    alert('Categoria "' + nome + '" criada!');
+  }
+
+  removerCategoria(id) {
+    const cat = this.data.categorias.find(c => c.id === id);
+    if (!cat) return;
+    const qtd = this.data.servicos.filter(s => s.categoria === cat.nome).length;
+    let msg = 'Tem certeza que deseja remover a categoria "' + cat.nome + '"?';
+    if (qtd > 0) msg += '\n\n' + qtd + ' serviço(s) nela serão movidos para "Geral".';
+    if (!confirm(msg)) return;
+    // Reclassifica servicos da categoria removida para 'Geral'
+    this.data.servicos.forEach(s => { if (s.categoria === cat.nome) s.categoria = 'Geral'; });
+    this.data.categorias = this.data.categorias.filter(c => c.id !== id);
+    this.excluirDoBanco('categorias', id);
+    this.saveData();
+    this.renderGerenciarCategorias();
+    this.renderServicesCatalog();
+    this.popularSelectsCategoria();
+  }
+
+  popularSelectsCategoria() {
+    ['novo-srv-categoria', 'edit-srv-categoria'].forEach(id => {
+      const sel = document.getElementById(id);
+      if (!sel) return;
+      const atual = sel.value;
+      sel.innerHTML = this.data.categorias.map(c => `<option value="${c.nome}">${c.nome}</option>`).join('');
+      if (this.data.categorias.some(c => c.nome === atual)) sel.value = atual;
+    });
+  }
+
 
   // ==========================================
   // CRM CLIENTES & MÚLTIPLOS VEÍCULOS
